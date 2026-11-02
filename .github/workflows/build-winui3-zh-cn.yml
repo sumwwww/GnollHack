@@ -16,7 +16,10 @@ jobs:
     timeout-minutes: 180
 
     env:
+      CI: true
       BUILD_CONFIGURATION: ${{ github.event.inputs.configuration || 'Release' }}
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
 
     steps:
       - name: Checkout GnollHack Repository
@@ -113,11 +116,15 @@ jobs:
           $cfg = "${{ env.BUILD_CONFIGURATION }}"
           if ([string]::IsNullOrEmpty($cfg)) { $cfg = "Release" }
 
+          Write-Host "Building WinUI app in CI mode with package signing disabled..."
           dotnet publish "win/win32/xpl/GnollHackM/GnollHackM.csproj" `
             -c $cfg `
             -f net10.0-windows10.0.19041.0 `
             -p:WindowsPackageType=None `
             -p:SelfContained=true `
+            -p:AppxPackageSigningEnabled=false `
+            -p:PackageCertificateThumbprint="" `
+            -p:GenerateAppInstallerFile=false `
             -o "$env:RUNNER_TEMP/GnollHack_WinUI3_zhCN_Build"
 
       - name: Upload Compiled GnollHack WinUI3 Simplified Chinese Artifact
