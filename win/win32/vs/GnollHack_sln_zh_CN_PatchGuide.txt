@@ -1,0 +1,17 @@
+================================================================================
+win/win32/vs/GnollHack.sln 原生与数据包解决方案 (Stage 1) 汉化编译说明
+================================================================================
+
+GnollHack 采用双解决方案编译管线（详见官方 Wiki：Overview of Building GnollHack with .NET MAUI）：
+
+第一步：编译原生解决方案 `win/win32/vs/GnollHack.sln`
+- 作用：
+  1) 编译构建工具 `makedefs`、`levcomp`、`dgncomp`、`dlb`
+  2) 将汉化后的 `dat/` 文本与 `.des` 关卡脚本打包进 Windows 格式的 `nhdat` 数据档案
+  3) 编译包含简体中文词库的原生动态库 `gnollhackwin.dll`，并连同 FMOD 运行时 DLL 复制到：
+     `win\win32\xpl\GnollHackM\Platforms\Windows\libs`
+  4) 运行 `makedefsdroid` 将 `GnollHackX` 中已汉化的共享 XAML 视图转换为 `GnollHackM` (.NET MAUI) 格式
+
+- 注意事项：
+  * 请勿直接手动修改 `GnollHackM` 下的生成版 XAML，因为每次重新生成 `GnollHack.sln` 时都会从 `GnollHackX` 覆盖过去。
+  * 所有 `dat/` 目录下的文本文件必须保持 **UTF-8 无 BOM** 格式（仓库近期专门移除了三个 DAT 文本的 BOM 头以防止 `dlb`/`makedefs` 解析异常）。
