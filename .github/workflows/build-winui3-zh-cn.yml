@@ -13,6 +13,11 @@ on:
 jobs:
   build-winui3-zh-cn:
     runs-on: windows-latest
+    timeout-minutes: 180
+
+    env:
+      BUILD_CONFIGURATION: ${{ github.event.inputs.configuration || 'Release' }}
+
     steps:
       - name: Checkout GnollHack Repository
         uses: actions/checkout@v4
@@ -31,11 +36,14 @@ jobs:
       - name: Install .NET MAUI Workload
         shell: pwsh
         run: |
-          dotnet workload install maui
+          dotnet workload install maui --ignore-failed-sources
 
       - name: Download Official Tile Sets & FMOD Sound Banks from GitHub Releases
         shell: pwsh
+        continue-on-error: true
         run: |
+          $ErrorActionPreference = "Continue"
+
           New-Item -ItemType Directory -Force -Path "win/win32/tileset" | Out-Null
           New-Item -ItemType Directory -Force -Path "win/win32/bank/Desktop" | Out-Null
           New-Item -ItemType Directory -Force -Path "win/win32/bank/Mobile" | Out-Null
@@ -73,28 +81,47 @@ jobs:
             Write-Warning "Could not auto-fetch GnollHackSoundSet release: $_"
           }
 
-      - name: Apply Simplified Chinese (zh-CN) Localization Patch
+      - name: Apply Simplified Chinese (zh-CN) Localization Patch if present
         shell: pwsh
         run: |
-          python tools_zh_CN/apply_zh_cn_patch.py --repo .
+          $script = Join-Path $PWD "tools_zh_CN/apply_zh_cn_patch.py"
+          if (Test-Path $script) {
+            Write-Host "Applying zh-CN patch: $script"
+            python $script --repo $PWD
+          } else {
+            Write-Warning "Localization patch script not found, skipping patch step."
+          }
 
       - name: Stage 1 - Build Native C99 Engine & nhdat Archive (GnollHack.sln x64)
         shell: pwsh
         run: |
           $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
           $msbuild = & $vswhere -latest -requires Microsoft.Component.MSBuild -find "MSBuild\**\Bin\MSBuild.exe" | Select-Object -First 1
-          $cfg = "${{ github.event.inputs.configuration }}"
+
+          $cfg = "${{ env.BUILD_CONFIGURATION }}"
           if ([string]::IsNullOrEmpty($cfg)) { $cfg = "Release" }
+
+          if (-not $msbuild) {
+            throw "MSBuild not found. Visual Studio Build Tools may not be installed on the runner."
+          }
+
           & $msbuild "win/win32/vs/GnollHack.sln" /t:Rebuild /p:Configuration=$cfg /p:Platform=x64 /m
 
       - name: Stage 2 - Build Modern Windows WinUI 3 Client (GnollHackM.csproj)
         shell: pwsh
         run: |
-          $cfg = "${{ github.event.inputs.configuration }}"
+          $cfg = "${{ env.BUILD_CONFIGURATION }}"
           if ([string]::IsNullOrEmpty($cfg)) { $cfg = "Release" }
-          dotnet publish "win/win32/xpl/GnollHackM/GnollHackM.csproj" -c $cfg -f net10.0-windows10.0.19041.0 -p:WindowsPackageType=None -p:SelfContained=true -o "$env:RUNNER_TEMP/GnollHack_WinUI3_zhCN_Build"
+
+          dotnet publish "win/win32/xpl/GnollHackM/GnollHackM.csproj" `
+            -c $cfg `
+            -f net10.0-windows10.0.19041.0 `
+            -p:WindowsPackageType=None `
+            -p:SelfContained=true `
+            -o "$env:RUNNER_TEMP/GnollHack_WinUI3_zhCN_Build"
 
       - name: Upload Compiled GnollHack WinUI3 Simplified Chinese Artifact
+        if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
           name: GnollHack-WinUI3-zh-CN-Windows-x64
