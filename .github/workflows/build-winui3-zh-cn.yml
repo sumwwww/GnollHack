@@ -1,0 +1,101 @@
+name: Build GnollHack WinUI3 Simplified Chinese (Windows x64)
+
+on:
+  workflow_dispatch:
+    inputs:
+      configuration:
+        description: "Build Configuration (Release or Debug)"
+        required: true
+        default: "Release"
+  push:
+    branches: [ master, main, zh-CN ]
+
+jobs:
+  build-winui3-zh-cn:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout GnollHack Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup .NET 10.0 SDK & MAUI Workload
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+          dotnet-quality: "ga"
+
+      - name: Install .NET MAUI Workload
+        shell: pwsh
+        run: |
+          dotnet workload install maui
+
+      - name: Download Official Tile Sets & FMOD Sound Banks from GitHub Releases
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "win/win32/tileset" | Out-Null
+          New-Item -ItemType Directory -Force -Path "win/win32/bank/Desktop" | Out-Null
+          New-Item -ItemType Directory -Force -Path "win/win32/bank/Mobile" | Out-Null
+
+          Write-Host "Fetching latest GnollHackTileSet release assets..."
+          try {
+            $tileRel = Invoke-RestMethod -Uri "https://api.github.com/repos/hyvanmielenpelit/GnollHackTileSet/releases/latest"
+            foreach ($asset in $tileRel.assets) {
+              if ($asset.name -match "\.png$|\.zip$") {
+                $dest = Join-Path "win/win32/tileset" $asset.name
+                Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $dest
+                if ($asset.name -match "\.zip$") {
+                  Expand-Archive -Path $dest -DestinationPath "win/win32/tileset" -Force
+                }
+              }
+            }
+          } catch {
+            Write-Warning "Could not auto-fetch GnollHackTileSet release: $_"
+          }
+
+          Write-Host "Fetching latest GnollHackSoundSet release assets..."
+          try {
+            $soundRel = Invoke-RestMethod -Uri "https://api.github.com/repos/hyvanmielenpelit/GnollHackSoundSet/releases/latest"
+            foreach ($asset in $soundRel.assets) {
+              $dest = Join-Path "win/win32/bank" $asset.name
+              Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $dest
+              if ($asset.name -match "\.zip$") {
+                Expand-Archive -Path $dest -DestinationPath "win/win32/bank" -Force
+              } elseif ($asset.name -match "\.bank$") {
+                Copy-Item $dest "win/win32/bank/Desktop/" -Force
+                Copy-Item $dest "win/win32/bank/Mobile/" -Force
+              }
+            }
+          } catch {
+            Write-Warning "Could not auto-fetch GnollHackSoundSet release: $_"
+          }
+
+      - name: Apply Simplified Chinese (zh-CN) Localization Patch
+        shell: pwsh
+        run: |
+          python tools_zh_CN/apply_zh_cn_patch.py --repo .
+
+      - name: Stage 1 - Build Native C99 Engine & nhdat Archive (GnollHack.sln x64)
+        shell: pwsh
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $msbuild = & $vswhere -latest -requires Microsoft.Component.MSBuild -find "MSBuild\**\Bin\MSBuild.exe" | Select-Object -First 1
+          $cfg = "${{ github.event.inputs.configuration }}"
+          if ([string]::IsNullOrEmpty($cfg)) { $cfg = "Release" }
+          & $msbuild "win/win32/vs/GnollHack.sln" /t:Rebuild /p:Configuration=$cfg /p:Platform=x64 /m
+
+      - name: Stage 2 - Build Modern Windows WinUI 3 Client (GnollHackM.csproj)
+        shell: pwsh
+        run: |
+          $cfg = "${{ github.event.inputs.configuration }}"
+          if ([string]::IsNullOrEmpty($cfg)) { $cfg = "Release" }
+          dotnet publish "win/win32/xpl/GnollHackM/GnollHackM.csproj" -c $cfg -f net10.0-windows10.0.19041.0 -p:WindowsPackageType=None -p:SelfContained=true -o "$env:RUNNER_TEMP/GnollHack_WinUI3_zhCN_Build"
+
+      - name: Upload Compiled GnollHack WinUI3 Simplified Chinese Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GnollHack-WinUI3-zh-CN-Windows-x64
+          path: ${{ runner.temp }}/GnollHack_WinUI3_zhCN_Build
