@@ -1,0 +1,23 @@
+================================================================================
+win/win32/xpl/gnollhackwin & win/win32/vs/GnollHack.sln 简体中文编译配置说明
+================================================================================
+
+1. MSVC 编译器 UTF-8 源码与执行字符集配置 (/utf-8)：
+   在 Windows 上使用 Visual Studio 2026 编译 gnollhackwin.dll 时，如果系统区域设置不是 UTF-8，
+   MSVC 默认会将无 BOM 的 UTF-8 源码按本地代码页（如 CP936 GBK 或 CP1252）解析，导致中文常量乱码或编译报错 C2001。
+   我们提供的 `tools_zh_CN/apply_zh_cn_patch.py` 会自动在 `gnollhackwin.vcxproj` 及相关 C 项目的
+   `<ClCompile>` 节点注入：
+       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+
+2. 新增源文件挂载：
+   脚本会自动将以下汉化模块挂载到 `gnollhackwin.vcxproj`：
+   - `include/gnh_zh_cn.h`
+   - `include/artilist_zh_cn.h`
+   - `src/gnh_zh_cn.c`
+   - `src/objects_zh_cn.c`
+   - `src/spells_zh_cn.c`
+   - `src/monst_role_skill_zh_cn.c`
+   - `win/win32/xpl/libshare/libshare_utf8_bridge_zh_cn.c`
+
+3. P/Invoke UTF-8 字符串封送 (Marshaling)：
+   在 .NET 10 (WinUI 3) 中，确保 C# P/Invoke 回调采用 `Marshal.PtrToStringUTF8` 读取 C 引擎传入的 UTF-8 字节流。
