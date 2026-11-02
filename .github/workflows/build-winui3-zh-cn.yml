@@ -12,7 +12,7 @@ on:
 
 jobs:
   build-winui3-zh-cn:
-    runs-on: windows-latest
+    runs-on: windows-2022
     timeout-minutes: 180
 
     env:
@@ -34,7 +34,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Setup .NET 10.0 SDK & MAUI Workload
+      - name: Setup .NET 10.0 SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "10.0.x"
@@ -51,6 +51,53 @@ jobs:
           Write-Host "PYTHONUTF8=$env:PYTHONUTF8"
           Write-Host "PYTHONIOENCODING=$env:PYTHONIOENCODING"
 
+      - name: Detect installed Windows SDK
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          $candidates = @(
+            "10.0.26100.0",
+            "10.0.22621.0",
+            "10.0.22000.0",
+            "10.0.19041.0"
+          )
+
+          $root = "${env:ProgramFiles(x86)}\Windows Kits\10\Include"
+          $selected = $null
+
+          foreach ($v in $candidates) {
+            $candidate = Join-Path $root $v
+            if (Test-Path $candidate) {
+              $selected = $v
+              break
+            }
+          }
+
+          if (-not $selected) {
+            $children = @()
+            if (Test-Path $root) {
+              $children = Get-ChildItem $root | Select-Object -ExpandProperty Name
+            }
+            Write-Host "Windows Kits include folder: $root"
+            if ($children.Count -gt 0) {
+              Write-Host "Installed SDK folders:"
+              $children | ForEach-Object { Write-Host "  $_" }
+            } else {
+              Write-Host "No Windows SDK folders found under $root"
+            }
+            throw "No compatible Windows SDK found under $root"
+          }
+
+          "WIN_SDK_VERSION=$selected" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          Write-Host "Selected Windows SDK version: $selected"
+
+      - name: Restore .NET assets for SourceFileTimeStamper
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          dotnet restore "win/win32/xpl/SourceFileTimeStamper/SourceFileTimeStamper.csproj" --nologo
+
       - name: Install .NET MAUI Workload
         shell: pwsh
         run: |
@@ -59,66 +106,6 @@ jobs:
           $OutputEncoding = [System.Text.UTF8Encoding]::new()
           [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
           dotnet workload install maui --ignore-failed-sources
-
-      - name: Ensure required Windows SDK is installed
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = "Stop"
-          $sdkVersion = "10.0.22621.0"
-          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-          if (-not (Test-Path $vswhere)) {
-            throw "vswhere.exe not found at $vswhere"
-          }
-
-          $vsPath = & $vswhere -latest -products * -property installationPath
-          if (-not $vsPath) {
-            throw "Visual Studio installation not found."
-          }
-
-          $installer = Join-Path $vsPath "Common7\IDE\vs_installer.exe"
-          $sdkRoot = Join-Path ${env:ProgramFiles(x86)} "Windows Kits\10\Include"
-          $includeFolder = Join-Path $sdkRoot "$sdkVersion"
-
-          Write-Host "VS path: $vsPath"
-          Write-Host "SDK include folder candidate: $includeFolder"
-
-          if (-not (Test-Path $includeFolder)) {
-            Write-Host "Windows SDK $sdkVersion not found. Installing via VS Installer..."
-            if (-not (Test-Path $installer)) {
-              throw "VS Installer not found at $installer"
-            }
-
-            & $installer modify `
-              --installPath "$vsPath" `
-              --quiet --norestart --wait `
-              --add Microsoft.VisualStudio.Component.Windows11SDK.22621 `
-              --includeRecommended
-
-            if ($LASTEXITCODE -ne 0) {
-              throw "Failed to install Windows SDK 10.0.22621.0"
-            }
-          } else {
-            Write-Host "Windows SDK $sdkVersion already installed."
-          }
-
-          if (-not (Test-Path $includeFolder)) {
-            throw "Windows SDK $sdkVersion still not present after install attempt."
-          }
-
-      - name: Validate Windows SDK before native C++ build
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = "Stop"
-          $sdkVersion = "10.0.22621.0"
-          $includeRoot = Join-Path ${env:ProgramFiles(x86)} "Windows Kits\10\Include"
-          $includePath = Join-Path $includeRoot $sdkVersion
-
-          if (-not (Test-Path $includePath)) {
-            throw "Required Windows SDK not found at $includePath"
-          }
-
-          Write-Host "SDK validated: $includePath"
-          Get-ChildItem $includePath | Select-Object -First 5 | Format-Table -AutoSize
 
       - name: Download Official Tile Sets & FMOD Sound Banks from GitHub Releases
         shell: pwsh
@@ -190,15 +177,23 @@ jobs:
           $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
           $msbuild = & $vswhere -latest -requires Microsoft.Component.MSBuild -find "MSBuild\**\Bin\MSBuild.exe" | Select-Object -First 1
 
-          $cfg = "${{ env.BUILD_CONFIGURATION }}"
-          if ([string]::IsNullOrEmpty($cfg)) { $cfg = "Release" }
-
           if (-not $msbuild) {
             throw "MSBuild not found. Visual Studio Build Tools may not be installed on the runner."
           }
 
+          $cfg = "${{ env.BUILD_CONFIGURATION }}"
+          if ([string]::IsNullOrEmpty($cfg)) { $cfg = "Release" }
+
           Write-Host "Using MSBuild: $msbuild"
-          & $msbuild "win/win32/vs/GnollHack.sln" /t:Rebuild /p:Configuration=$cfg /p:Platform=x64 /m
+          Write-Host "Using Windows SDK: $env:WIN_SDK_VERSION"
+
+          & $msbuild "win/win32/vs/GnollHack.sln" `
+            /t:Rebuild `
+            /p:Configuration=$cfg `
+            /p:Platform=x64 `
+            /p:WindowsTargetPlatformVersion=$env:WIN_SDK_VERSION `
+            /p:WindowsTargetPlatformMinVersion=$env:WIN_SDK_VERSION `
+            /m
 
       - name: Stage 2 - Build Modern Windows WinUI 3 Client (GnollHackM.csproj)
         shell: pwsh
