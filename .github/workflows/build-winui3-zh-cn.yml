@@ -51,6 +51,13 @@ jobs:
           Write-Host "PYTHONUTF8=$env:PYTHONUTF8"
           Write-Host "PYTHONIOENCODING=$env:PYTHONIOENCODING"
 
+      - name: Clean old build artifacts before build
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          git clean -xfd
+          Write-Host "Repository cleaned with git clean -xfd"
+
       - name: Detect installed Windows SDK
         shell: pwsh
         run: |
@@ -91,6 +98,36 @@ jobs:
 
           "WIN_SDK_VERSION=$selected" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           Write-Host "Selected Windows SDK version: $selected"
+
+      - name: Validate expected build inputs for levcomp / .des data generation
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          $requiredFiles = @(
+            "dat/arch.des",
+            "dat/barb.des",
+            "dat/bigroom.des",
+            "dat/bovine.des",
+            "dat/quantum.des",
+            "dat/castle.des",
+            "dat/caveman.des",
+            "dat/endgame.des",
+            "dat/gehennom.des",
+            "dat/mines.des"
+          )
+
+          foreach ($f in $requiredFiles) {
+            if (-not (Test-Path $f)) {
+              throw "Required build input file not found: $f"
+            }
+            Write-Host "OK: $f"
+          }
+
+          $generatedDir = "tools/Release/x64"
+          New-Item -ItemType Directory -Force -Path $generatedDir | Out-Null
+
+          Write-Host "levcomp input validation passed."
 
       - name: Restore .NET assets for SourceFileTimeStamper
         shell: pwsh
@@ -193,7 +230,7 @@ jobs:
             /p:Platform=x64 `
             /p:WindowsTargetPlatformVersion=$env:WIN_SDK_VERSION `
             /p:WindowsTargetPlatformMinVersion=$env:WIN_SDK_VERSION `
-            /m
+            /m:1
 
       - name: Stage 2 - Build Modern Windows WinUI 3 Client (GnollHackM.csproj)
         shell: pwsh
