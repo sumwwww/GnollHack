@@ -1,0 +1,18 @@
+# GnollHack 幸运曲奇传言 (rumors) 与德尔斐神谕 (oracles) 简体中文汉化核心条目
+# 编码要求：UTF-8 无 BOM
+
+[True Rumors - 真实传言 (rumors.tru)]
+Nothing happens when you dip a potion of healing into a magic fountain.|将治疗药水浸入魔法泉水不会发生意外，但将未受诅咒的清水放在本阵营祭坛上祈祷会将其化为圣水。
+Robes have their own equipment slot and can be worn over body armor.|长袍拥有独立的装备槽位，可以穿在身体护甲外层，游戏会自动取两者中更优的护甲等级(AC)与魔法抵消(MC)。
+Magic resistance alone does not protect you from death rays in GnollHack.|在 GnollHack 中，仅靠魔法抗性无法抵御死亡射线与死亡之触，你必须获取“死亡抗性 (Death Resistance)”或高额魔法抵消(MC)。
+Crystal plate mail grants reflection and has a low spell casting penalty.|水晶板甲不仅提供反射能力，而且对施法成功率的惩罚极低，非常适合巫师穿戴。
+Eating a fig or applying a jar of medicinal salve cures sickness immediately.|吃下无花果或涂抹医疗祛病药膏罐可以立即治愈致命的疾病与木乃伊腐烂症。
+Always keep a lizard corpse, a dragon fruit, or a jar of basilisk blood in open inventory against petrification.|随身在主物品栏（而非次元袋内）备好蜥蜴尸体、火龙果或石化蜥蜴血罐，在遭遇石化时仅有 1 回合自救时间！
+Engraving Gilthoniel outside Gehennom or Morgoth inside Gehennom stops monsters from looting containers on that tile.|在焦热地狱外刻写 Gilthoniel，或在地狱内刻写 Morgoth，可阻止怪物拾取该格地面物品或翻找箱包。
+Switching between two readied weapon sets with 'x' costs zero turns.|使用切换武器组命令 (x) 在两套预设武器/盾牌组合之间切换不会消耗任何回合。
+A touchstone identifies gems even when uncursed, unless it is actually a cursed jinxstone.|试金石即使未受祝福也能鉴定宝石，但千万小心混在灰石中的受诅咒厄运石 (Jinxstone)！
+
+[Oracle Consultations - 德尔斐神谕先知箴言 (oracles.txt)]
+The Oracle level in Delphi anchors the depths of Sokoban, the Quest portal, and Treasure Island.|德尔斐神谕层的位置决定了推箱子迷宫（神谕层下1层）、职业试炼传送门（下6-7层）与金银宝岛（下9-10层）的生成深度。
+Below Mine Town lies a portal to the Large Circular Dungeon, where quantum mechanics dwell.|在矿坑城镇下方1至2层隐藏着通往大型环形高能地牢的传送门，那里栖息着量子力学家。
+In Gehennom, seek Vlad's Tower for the Candelabrum, and the true Wizard's Tower via the fake towers for the Book of the Dead.|在焦热地狱中，前往穿刺公之塔夺取祈祷七枝烛台，并通过伪巫师塔内的传送门进入真正的严多巫师塔夺取亡灵之书。

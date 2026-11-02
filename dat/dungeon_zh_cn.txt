@@ -1,0 +1,46 @@
+# GnollHack 地牢分支与特殊关卡简体中文映射表 (dat/dungeon.def & *.des)
+# 注意：本文件采用无 BOM 的 UTF-8 编码，供 dgncomp / levcomp 与汉化回写脚本使用
+
+# === 1. 主地牢与六大核心分支 (Main Dungeon & Primary Branches) ===
+Dungeons of Doom|厄运地牢 (Dungeons of Doom)
+The Dungeons of Doom|厄运地牢
+Gnomish Mines|地精矿坑 (Gnomish Mines)
+The Gnomish Mines|地精矿坑
+Sokoban|推箱子迷宫 (Sokoban)
+Quest|职业试炼任务界 (Quest)
+Fort Ludios|卢迪奥斯要塞 (Fort Ludios)
+Gehennom|焦热地狱 (Gehennom)
+Elemental Planes|元素位面 (Elemental Planes)
+Plane of Earth|土元素位面
+Plane of Air|气元素位面
+Plane of Fire|火元素位面
+Plane of Water|水元素位面
+Astral Plane|星界位面 (Astral Plane)
+
+# === 2. 厄运地牢特殊楼层 (Special Levels in Dungeons of Doom) ===
+Delphi|德尔斐神谕殿 (Delphi)
+Big Room|巨型大厅 (Big Room)
+Treasure Island|金银宝岛 (Treasure Island)
+Medusa's Island|美杜莎之岛 (Medusa's Island)
+Minotaur Maze|米诺陶迷宫 (Minotaur Maze)
+Underground Castle|地下城堡 (Underground Castle)
+
+# === 3. 地精矿坑分支与特殊楼层 (Gnomish Mines Branches & Special Levels) ===
+Large Circular Dungeon|大型环形高能地牢 (Large Circular Dungeon)
+Mine Town|矿坑城镇 (Mine Town)
+Mines' End|矿坑尽头 (Mines' End)
+
+# === 4. 焦热地狱分支与特殊楼层 (Gehennom Branches & Special Levels) ===
+Plane of the Modron|魔冢几何位面 (Plane of the Modron)
+Hellish Pastures|地狱牧场·恶魔奶牛关 (Hellish Pastures)
+Vlad's Tower|穿刺公弗拉德之塔 (Vlad's Tower)
+Valley of the Dead|亡者之谷 (Valley of the Dead)
+Dis|迪斯铁城 (Dis)
+Maladomini|玛拉多米尼·蝇王领地 (Maladomini)
+Jubilex's Realm|朱庇莱克斯泥沼领地 (Jubilex's Realm)
+Orcus Town|奥库斯废墟魔镇 (Orcus Town)
+Wizard's Tower|严多巫师塔 (Wizard's Tower)
+Lair of Tarrasque|泰拉斯奎巨兽巢穴 (Lair of Tarrasque)
+Yeenaghu's Domain|耶诺古豺狼人魔域 (Yeenaghu's Domain)
+Fake Wizard's Towers|伪巫师塔 (Fake Wizard's Towers)
+Moloch's Sanctum|摩洛克至高圣所 (Moloch's Sanctum)

@@ -1,0 +1,20 @@
+# GnollHack 核心设置选项与游戏模式说明简体中文版 (dat/opthelp & defaults.gnh)
+# 编码要求：UTF-8 无 BOM (严禁添加 BOM 头，否则 dlb 打包或解析器会报错)
+
+[游戏模式与核心机制选项]
+tellexp             经验提示：获得经验值时在消息栏显示具体数值。
+metric_system       公制单位：将物品重量与距离从英制（lbs/feet）切换为公制（kg/m）。
+show_weight_summary 负重摘要：在物品栏顶部实时显示当前负重与负重上限百分比。
+autopickup          自动拾取：移动到物品格时自动拾取符合规则的物品（如金币、弹药、药水、卷轴）。
+pickup_thrown       拾取投掷物：自动捡起自己投掷出去的飞刀、长矛与弹药。
+confirm             安全确认：攻击和平生物、踏入熔岩/深水、踏入已知陷阱前弹出确认提示。
+safe_pet            宠物保护：禁止无意中攻击自己的宠物或雇佣兵。
+time                显示回合：在状态栏显示当前已进行的回合数。
+score               显示分数：在状态栏实时计算并显示当前得分。
+
+[现代 WinUI 3 客户端图形与音频选项]
+GPU Acceleration    GPU 硬件加速：启用时通过 SkiaSharp SKGLView (WinUI 3 SwapChainPanel) 渲染；禁用时使用 SKCanvasView。
+FPS Limit           帧率上限：设置为显示器刷新率的整数分频（如 60 FPS / 120 FPS）。
+Sound Effects       音效音量：控制 FMOD 引擎播放的超过 1,100 种环境与战斗音效。
+Music Volume        音乐音量：控制 37 首背景音乐曲目的播放音量。
+Voice Acting        角色配音：控制 96 位配音演员录制的 5,000+ 条 NPC 与首领语音。
