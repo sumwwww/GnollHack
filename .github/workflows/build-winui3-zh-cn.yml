@@ -20,6 +20,10 @@ jobs:
       BUILD_CONFIGURATION: ${{ github.event.inputs.configuration || 'Release' }}
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      PYTHONUTF8: "1"
+      PYTHONIOENCODING: utf-8
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
 
     steps:
       - name: Checkout GnollHack Repository
@@ -36,9 +40,24 @@ jobs:
           dotnet-version: "10.0.x"
           dotnet-quality: "ga"
 
+      - name: Fix Windows console encoding for UTF-8
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          chcp 65001 | Out-Null
+          $OutputEncoding = [System.Text.UTF8Encoding]::new()
+          [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+          Write-Host "Console output encoding: $([Console]::OutputEncoding.EncodingName)"
+          Write-Host "Python UTF-8 env: $env:PYTHONUTF8"
+          Write-Host "Python I/O encoding: $env:PYTHONIOENCODING"
+
       - name: Install .NET MAUI Workload
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
+          chcp 65001 | Out-Null
+          $OutputEncoding = [System.Text.UTF8Encoding]::new()
+          [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
           dotnet workload install maui --ignore-failed-sources
 
       - name: Download Official Tile Sets & FMOD Sound Banks from GitHub Releases
@@ -87,6 +106,11 @@ jobs:
       - name: Apply Simplified Chinese (zh-CN) Localization Patch if present
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
+          chcp 65001 | Out-Null
+          $OutputEncoding = [System.Text.UTF8Encoding]::new()
+          [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+
           $script = Join-Path $PWD "tools_zh_CN/apply_zh_cn_patch.py"
           if (Test-Path $script) {
             Write-Host "Applying zh-CN patch: $script"
@@ -98,6 +122,11 @@ jobs:
       - name: Stage 1 - Build Native C99 Engine & nhdat Archive (GnollHack.sln x64)
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
+          chcp 65001 | Out-Null
+          $OutputEncoding = [System.Text.UTF8Encoding]::new()
+          [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+
           $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
           $msbuild = & $vswhere -latest -requires Microsoft.Component.MSBuild -find "MSBuild\**\Bin\MSBuild.exe" | Select-Object -First 1
 
@@ -113,6 +142,11 @@ jobs:
       - name: Stage 2 - Build Modern Windows WinUI 3 Client (GnollHackM.csproj)
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
+          chcp 65001 | Out-Null
+          $OutputEncoding = [System.Text.UTF8Encoding]::new()
+          [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+
           $cfg = "${{ env.BUILD_CONFIGURATION }}"
           if ([string]::IsNullOrEmpty($cfg)) { $cfg = "Release" }
 
