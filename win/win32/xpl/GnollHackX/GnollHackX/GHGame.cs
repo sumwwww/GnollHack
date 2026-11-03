@@ -1509,6 +1509,11 @@ namespace GnollHackX
 
         public int ClientCallback_YnFunction(int style, int attr, int color, int glyph, string title, string question, string responses, string def, string descriptions, string introline, ulong ynflags)
         {
+#if GNH_MAUI
+            title = GnhDisplayLocalization.Translate(title);
+            question = GnhDisplayLocalization.Translate(question);
+            introline = GnhDisplayLocalization.Translate(introline);
+#endif
             if (question != null)
                 RawPrintEx(question, attr, color, false);
 
@@ -1680,18 +1685,27 @@ namespace GnollHackX
 
         public void RawPrintEx(string str, int attr, int color, bool is_restoring)
         {
+#if GNH_MAUI
+            str = GnhDisplayLocalization.Translate(str);
+#endif
             GHMsgHistoryItem newmsg = new GHMsgHistoryItem(str, attr, color);
             AddNewMessage(newmsg, is_restoring);
         }
 
         public void RawPrintEx2(string str, byte[] attrs, byte[] colors, int attr, int color, bool is_restoring)
         {
+#if GNH_MAUI
+            GnhDisplayLocalization.TranslateStyled(ref str, ref attrs, ref colors);
+#endif
             GHMsgHistoryItem newmsg = new GHMsgHistoryItem(str, attrs, colors, attr, color);
             AddNewMessage(newmsg, is_restoring);
         }
 
         public void ClientCallback_PutStrEx(int win_id, string str, int attributes, int color, int append)
         {
+#if GNH_MAUI
+            str = GnhDisplayLocalization.Translate(str);
+#endif
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.PutStrEx, win_id, str, attributes, color, append);
@@ -1736,6 +1750,9 @@ namespace GnollHackX
                 Marshal.Copy(colors_ptr, colors, 0, str_length + 1);
             }
 
+#if GNH_MAUI
+            GnhDisplayLocalization.TranslateStyled(ref str, ref attributes, ref colors);
+#endif
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.PutStrEx2, win_id, str, attributes, colors, attr, color, append);
@@ -2171,6 +2188,9 @@ namespace GnollHackX
                 Marshal.Copy(colors_ptr, colors, 0, attrs_colors_size);
             }
 
+#if GNH_MAUI
+            GnhDisplayLocalization.TranslateStyled(ref text, ref attrs, ref colors);
+#endif
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.AddExtendedMenu, winid, glyph, identifier, accel, groupaccel, attr, color, text, presel,
@@ -2231,6 +2251,10 @@ namespace GnollHackX
 
         public void ClientCallback_EndMenu(int winid, string prompt, string subtitle)
         {
+#if GNH_MAUI
+            prompt = GnhDisplayLocalization.Translate(prompt);
+            subtitle = GnhDisplayLocalization.Translate(subtitle);
+#endif
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("EndMenu");
             if (IsRecording)
             {
