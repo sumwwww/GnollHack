@@ -287,6 +287,14 @@ jobs:
           if ([string]::IsNullOrEmpty($cfg)) { $cfg = "Release" }
 
           Write-Host "Building WinUI app in CI mode with package signing disabled..."
+          $windowsAssets = "win/win32/xpl/GnollHackM/Platforms/Windows"
+          New-Item -ItemType Directory -Force -Path "$windowsAssets/banks", "$windowsAssets/tileset" | Out-Null
+          foreach ($bank in @("Auxiliary", "Intro", "Master", "Master.strings", "Music", "Preliminary")) {
+            Copy-Item -LiteralPath "win/win32/bank/Desktop/$bank.bank" -Destination "$windowsAssets/banks/$bank.bank" -Force -ErrorAction Stop
+          }
+          foreach ($stem in @("gnollhack_64x96_transparent_32bits", "gnollhack_64x96_transparent_32bits-2", "gnollhack_64x96_transparent_32bits-3")) {
+            Copy-Item -LiteralPath "win/win32/tileset/$stem.png" -Destination "$windowsAssets/tileset/$stem.ghpng" -Force -ErrorAction Stop
+          }
           $communityConfig = "win/win32/xpl/GnollHackM/Assets/ghsecrets.sjson"
           if (-not (Test-Path -LiteralPath $communityConfig)) {
             New-Item -ItemType Directory -Force -Path (Split-Path $communityConfig) | Out-Null
