@@ -163,6 +163,7 @@ namespace GnollHackX
             _paint.Dispose();
 #if GNH_MAUI
             _font.Dispose();
+            _cjkFont?.Dispose();
 #endif
         }
 
@@ -642,6 +643,9 @@ namespace GnollHackX
         public void DrawTextOnCanvas(SKCanvas canvas, string text, float x, float y, SKTextAlign textAlign)
         {
 #if GNH_MAUI
+            if (TryDrawCjkFallback(canvas, text, x, y, textAlign)) return;
+#endif
+#if GNH_MAUI
             if (text != null && CanCacheText(text.AsSpan()))
             {
                 DrawCachedText(canvas, text.AsSpan(), x, y, textAlign);
@@ -663,6 +667,9 @@ namespace GnollHackX
 
         public void DrawTextOnCanvas(SKCanvas canvas, ReadOnlySpan<char> text, float x, float y, SKTextAlign textAlign)
         {
+#if GNH_MAUI
+            if (TryDrawCjkFallback(canvas, text, x, y, textAlign)) return;
+#endif
 #if GNH_MAUI
             if (CanCacheText(text))
             {
@@ -704,6 +711,9 @@ namespace GnollHackX
         public void DrawTextOnCanvas(SKCanvas canvas, string text, float x, float y)
         {
 #if GNH_MAUI
+            if (TryDrawCjkFallback(canvas, text, x, y, SKTextAlign.Left)) return;
+#endif
+#if GNH_MAUI
             if (text != null && CanCacheText(text.AsSpan()))
             {
                 DrawCachedText(canvas, text.AsSpan(), x, y, SKTextAlign.Left);
@@ -723,6 +733,9 @@ namespace GnollHackX
 #if GNH_MAUI
         public void DrawTextOnCanvas(SKCanvas canvas, ReadOnlySpan<char> text, float x, float y)
         {
+#if GNH_MAUI
+            if (TryDrawCjkFallback(canvas, text, x, y, SKTextAlign.Left)) return;
+#endif
             if (text == ReadOnlySpan<char>.Empty)
                 return;
 
@@ -746,10 +759,61 @@ namespace GnollHackX
         }
 #endif
 
+
+#if GNH_MAUI
+        private SKFont _cjkFont;
+#if WINDOWS
+        private static readonly Lazy<SKTypeface> CjkRegular = new Lazy<SKTypeface>(() =>
+            SKFontManager.Default.MatchCharacter(null, SKFontStyle.Normal, new[] { "zh-Hans" }, 0x4E2D));
+        private static readonly Lazy<SKTypeface> CjkBold = new Lazy<SKTypeface>(() =>
+            SKFontManager.Default.MatchCharacter(null, SKFontStyle.Bold, new[] { "zh-Hans" }, 0x4E2D));
+#endif
+        private SKFont FontForText(ReadOnlySpan<char> text)
+        {
+#if WINDOWS
+            bool hasCjk = false;
+            foreach (char ch in text)
+                if ((ch >= '\u2E80' && ch <= '\u9FFF') || (ch >= '\uF900' && ch <= '\uFAFF'))
+                { hasCjk = true; break; }
+            if (hasCjk && !_font.ContainsGlyphs(text))
+            {
+                var typeface = (_font.Typeface?.FontStyle.Weight ?? 400) >= 600 ? CjkBold.Value : CjkRegular.Value;
+                if (typeface != null)
+                {
+                    if (_cjkFont == null || !ReferenceEquals(_cjkFont.Typeface, typeface))
+                    {
+                        _cjkFont?.Dispose();
+                        _cjkFont = new SKFont(typeface, _font.Size);
+                    }
+                    _cjkFont.Size = _font.Size;
+                    _cjkFont.ScaleX = _font.ScaleX;
+                    _cjkFont.SkewX = _font.SkewX;
+                    _cjkFont.Edging = _font.Edging;
+                    return _cjkFont;
+                }
+            }
+#endif
+            return _font;
+        }
+
+        private bool TryDrawCjkFallback(SKCanvas canvas, ReadOnlySpan<char> text, float x, float y, SKTextAlign align)
+        {
+            SKFont font = FontForText(text);
+            if (ReferenceEquals(font, _font)) return false;
+            float width = font.MeasureText(text, _paint);
+            if (align == SKTextAlign.Center) x -= width / 2;
+            else if (align == SKTextAlign.Right) x -= width;
+            // Fallback blobs bypass the original font cache and cannot reuse its glyphs.
+            using (SKTextBlob blob = SKTextBlob.Create(text, font))
+                if (blob != null) canvas.DrawText(blob, x, y, _paint);
+            return true;
+        }
+#endif
+
         public float MeasureText(string text)
         {
 #if GNH_MAUI
-            return _font.MeasureText(text, _paint);
+            return FontForText(text).MeasureText(text, _paint);
 #else
             return _paint.MeasureText(text);
 #endif
@@ -758,7 +822,7 @@ namespace GnollHackX
         public float MeasureText(string text, ref SKRect bounds)
         {
 #if GNH_MAUI
-            return _font.MeasureText(text, out bounds, _paint);
+            return FontForText(text).MeasureText(text, out bounds, _paint);
 #else
             return _paint.MeasureText(text, ref bounds);
 #endif
@@ -768,7 +832,7 @@ namespace GnollHackX
         public float MeasureText(ReadOnlySpan<char> text)
         {
 #if GNH_MAUI
-            return _font.MeasureText(text, _paint);
+            return FontForText(text).MeasureText(text, _paint);
 #else
             return _paint.MeasureText(text);
 #endif
@@ -777,7 +841,7 @@ namespace GnollHackX
         public float MeasureText(ReadOnlySpan<char> text, ref SKRect bounds)
         {
 #if GNH_MAUI
-            return _font.MeasureText(text, out bounds, _paint);
+            return FontForText(text).MeasureText(text, out bounds, _paint);
 #else
             return _paint.MeasureText(text, ref bounds);
 #endif
