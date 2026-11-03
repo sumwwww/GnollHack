@@ -30,7 +30,7 @@ class LocalizationTests(unittest.TestCase):
             for name in ('GnollHackX', 'GnollHackM'):
                 (repo / ('win/win32/xpl/' + name + '/test.xaml')).write_text('<Page><Label Text="Settings? (Advanced)"/><Label Text="A &amp; B"/></Page>', encoding='utf-8')
             command = [sys.executable, str(repo / 'tools_zh_CN/apply_zh_cn_patch.py'), '--repo', str(repo)]
-            subprocess.run(command, check=True, capture_output=True)
+            subprocess.run(command, check=True)
             for name in protected:
                 self.assertEqual((repo / name).read_bytes(), original, name)
             generated = repo / 'win/win32/xpl/GnollHackM/GnhZhCnDictionary.g.cs'
@@ -39,7 +39,7 @@ class LocalizationTests(unittest.TestCase):
             for name in ('GnollHackX', 'GnollHackM'):
                 tree = ET.parse(repo / ('win/win32/xpl/' + name + '/test.xaml'))
                 self.assertEqual([e.attrib['Text'] for e in tree.findall('Label')], list(translations.values()))
-            subprocess.run(command, check=True, capture_output=True)
+            subprocess.run(command, check=True)
             self.assertEqual(generated.read_bytes(), first)
 
 

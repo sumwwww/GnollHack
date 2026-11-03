@@ -39,34 +39,6 @@ def parse_c_kv_tables(c_file_path: Path) -> dict:
     return mapping
 
 
-def patch_global_h_bufsz(repo_root: Path):
-    global_h = repo_root / "include" / "global.h"
-    if not global_h.exists():
-        print("[SKIP] 未找到 include/global.h")
-        return
-    backup_file(global_h)
-    text = global_h.read_text(encoding="utf-8-sig", errors="replace")
-    new_text = re.sub(r"(#define\s+BUFSZ\s+)256\b", r"\g<1>1024 /* Expanded for UTF-8 zh-CN */", text)
-    new_text = re.sub(r"(#define\s+QBUFSZ\s+)128\b", r"\g<1>512 /* Expanded for UTF-8 zh-CN */", new_text)
-    if new_text != text:
-        strip_bom_and_write_utf8(global_h, new_text)
-        print("[OK] 已扩容 include/global.h 中的 BUFSZ (1024) 与 QBUFSZ (512)")
-
-
-def patch_vcxproj_utf8(repo_root: Path):
-    vs_dir = repo_root / "win" / "win32"
-    if not vs_dir.exists():
-        return
-    for vcx in vs_dir.rglob("*.vcxproj"):
-        text = vcx.read_text(encoding="utf-8-sig", errors="replace")
-        if "/utf-8" not in text and "<ClCompile>" in text:
-            backup_file(vcx)
-            new_text = text.replace(
-                "<ClCompile>",
-                "<ClCompile>\n      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>"
-            )
-            strip_bom_and_write_utf8(vcx, new_text)
-            print(f"[OK] 已为 {vcx.relative_to(repo_root)} 注入 MSVC /utf-8 编译标志")
 
 
 def patch_xaml_files(repo_root: Path, xaml_dict_path: Path):
@@ -97,52 +69,6 @@ def patch_xaml_files(repo_root: Path, xaml_dict_path: Path):
     print(f"[OK] 已完成 GnollHackX 下 {count} 个共享 XAML 视图的简体中文注入")
 
 
-def patch_c_string_tables(repo_root: Path, full_dict: dict):
-    targets = [
-        repo_root / "include" / "artilist.h",
-        repo_root / "src" / "objects.c",
-        repo_root / "src" / "monst.c",
-        repo_root / "src" / "role.c",
-        repo_root / "src" / "skill.c",
-    ]
-    for target in targets:
-        if not target.exists():
-            continue
-        text = target.read_text(encoding="utf-8-sig", errors="replace")
-        orig = text
-        for en_str, zh_str in full_dict.items():
-            # 仅替换双引号完全匹配的字符串字面量，保护 C 宏名与枚举标识符
-            text = text.replace(f'"{en_str}"', f'"{escape(zh_str, {chr(34): '&quot;'})}"')
-        if text != orig:
-            backup_file(target)
-            strip_bom_and_write_utf8(target, text)
-            print(f"[OK] 已汉化核心引擎数据表: {target.relative_to(repo_root)}")
-
-
-def patch_dat_dungeon(repo_root: Path, dungeon_txt_path: Path):
-    if not dungeon_txt_path.exists():
-        return
-    mapping = {}
-    for line in dungeon_txt_path.read_text(encoding="utf-8-sig").splitlines():
-        line = line.strip()
-        if not line or line.startswith("#") or "|" not in line:
-            continue
-        en, zh = line.split("|", 1)
-        mapping[en.strip()] = zh.strip()
-
-    dat_dir = repo_root / "dat"
-    if not dat_dir.exists():
-        return
-    for f in dat_dir.glob("*"):
-        if f.suffix in (".def", ".des", ".txt", ".tru", ".fal") and not f.name.endswith("_zh_cn.txt"):
-            text = f.read_text(encoding="utf-8-sig", errors="replace")
-            orig = text
-            for en_str, zh_str in mapping.items():
-                text = text.replace(f'"{en_str}"', f'"{escape(zh_str, {chr(34): '&quot;'})}"')
-            if text != orig:
-                backup_file(f)
-                # 严格以无 BOM UTF-8 写入 dat/ 文件
-                strip_bom_and_write_utf8(f, text)
 
 
 def extract_untranslated_strings(repo_root: Path, full_dict: dict, out_json: Path):
