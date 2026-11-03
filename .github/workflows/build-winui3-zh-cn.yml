@@ -287,6 +287,11 @@ jobs:
           if ([string]::IsNullOrEmpty($cfg)) { $cfg = "Release" }
 
           Write-Host "Building WinUI app in CI mode with package signing disabled..."
+          $communityConfig = "win/win32/xpl/GnollHackM/Assets/ghsecrets.sjson"
+          if (-not (Test-Path -LiteralPath $communityConfig)) {
+            New-Item -ItemType Directory -Force -Path (Split-Path $communityConfig) | Out-Null
+            "{}" | Set-Content -LiteralPath $communityConfig -Encoding utf8NoBOM
+          }
           dotnet publish "win/win32/xpl/GnollHackM/GnollHackM.csproj" `
             -c $cfg `
             -f net10.0-windows10.0.19041.0 `
