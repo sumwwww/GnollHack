@@ -171,13 +171,49 @@ jobs:
           New-Item -ItemType Directory -Force -Path "win/win32/bank/Desktop" | Out-Null
           New-Item -ItemType Directory -Force -Path "win/win32/bank/Mobile" | Out-Null
 
+          function Invoke-GitHubApiWithRetry {
+            param([Parameter(Mandatory = $true)][string]$Uri)
+            for ($attempt = 1; $attempt -le 4; $attempt++) {
+              try {
+                return Invoke-RestMethod -Uri $Uri -TimeoutSec 120
+              } catch {
+                if ($attempt -eq 4) { throw }
+                $delay = [int][Math]::Pow(2, $attempt - 1) * 5
+                Write-Host "GitHub API request failed (attempt $attempt/4); retrying in $delay seconds: $Uri"
+                Start-Sleep -Seconds $delay
+              }
+            }
+          }
+
+          function Invoke-DownloadWithRetry {
+            param(
+              [Parameter(Mandatory = $true)][string]$Uri,
+              [Parameter(Mandatory = $true)][string]$Destination
+            )
+            for ($attempt = 1; $attempt -le 4; $attempt++) {
+              try {
+                Invoke-WebRequest -Uri $Uri -OutFile $Destination -TimeoutSec 180
+                if (-not (Test-Path -LiteralPath $Destination) -or (Get-Item -LiteralPath $Destination).Length -eq 0) {
+                  throw "Downloaded file is missing or empty: $Destination"
+                }
+                return
+              } catch {
+                Remove-Item -LiteralPath $Destination -Force -ErrorAction SilentlyContinue
+                if ($attempt -eq 4) { throw }
+                $delay = [int][Math]::Pow(2, $attempt - 1) * 5
+                Write-Host "Asset download failed (attempt $attempt/4); retrying in $delay seconds: $Uri"
+                Start-Sleep -Seconds $delay
+              }
+            }
+          }
+
           Write-Host "Fetching latest GnollHackTileSet release assets..."
           try {
-            $tileRel = Invoke-RestMethod -Uri "https://api.github.com/repos/hyvanmielenpelit/GnollHackTileSet/releases/latest"
+            $tileRel = Invoke-GitHubApiWithRetry "https://api.github.com/repos/hyvanmielenpelit/GnollHackTileSet/releases/latest"
             foreach ($asset in $tileRel.assets) {
               if ($asset.name -match "\.png$|\.zip$") {
                 $dest = Join-Path "win/win32/tileset" $asset.name
-                Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $dest
+                Invoke-DownloadWithRetry $asset.browser_download_url $dest
                 if ($asset.name -match "\.zip$") {
                   Expand-Archive -Path $dest -DestinationPath "win/win32/tileset" -Force
                 }
@@ -189,10 +225,10 @@ jobs:
 
           Write-Host "Fetching latest GnollHackSoundSet release assets..."
           try {
-            $soundRel = Invoke-RestMethod -Uri "https://api.github.com/repos/hyvanmielenpelit/GnollHackSoundSet/releases/latest"
+            $soundRel = Invoke-GitHubApiWithRetry "https://api.github.com/repos/hyvanmielenpelit/GnollHackSoundSet/releases/latest"
             foreach ($asset in $soundRel.assets) {
               $dest = Join-Path "win/win32/bank" $asset.name
-              Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $dest
+              Invoke-DownloadWithRetry $asset.browser_download_url $dest
               if ($asset.name -match "\.zip$") {
                 Expand-Archive -Path $dest -DestinationPath "win/win32/bank" -Force
               } elseif ($asset.name -match "\.bank$") {
