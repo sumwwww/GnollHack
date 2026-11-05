@@ -54,6 +54,8 @@ jobs:
         run: |
           python tools_zh_CN/test_localization.py
           if ($LASTEXITCODE -ne 0) { throw "Localization regression check failed" }
+          python tools_zh_CN/apply_content_zh_cn.py --repo $PWD --check-only
+          if ($LASTEXITCODE -ne 0) { throw "Localized game-data validation failed" }
 
       - name: Fix Windows console encoding for UTF-8
         shell: pwsh
@@ -233,6 +235,8 @@ jobs:
             Write-Host "Applying zh-CN patch: $script"
             python $script --repo $PWD
             if ($LASTEXITCODE -ne 0) { throw "Localization generation failed" }
+            python (Join-Path $PWD "tools_zh_CN/apply_content_zh_cn.py") --repo $PWD
+            if ($LASTEXITCODE -ne 0) { throw "Localized game-data overlay failed" }
           } else {
             throw "Localization patch script not found"
           }

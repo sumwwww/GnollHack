@@ -1,0 +1,183 @@
+                  GNOLLHACK 跨平台图形用户界面制作人员名单
+                 （版权所有 Copyright 2020-2026 Hyvän mielen pelit ry）
+
+游戏设计：       Tommi Gustafsson, Janne Gustafsson
+界面设计：       Tommi Gustafsson, Janne Gustafsson
+程序开发：       Janne Gustafsson（GnollHack 核心、跨平台图形界面）
+                 Tommi Gustafsson（图块集编译器、Dgamelaunch 模组）
+游戏界面图标：   valerie_pl
+图块美术：       Riikka Laakkonen（玩家角色、怪物及各类图像）
+                 Markus Turunen（动画、陷阱及各类图像）
+                 Janne Rajamäki（地牢图块集及各类图像）
+                 Anu Kogger（地牢图块集及各类图像）
+                 Milla Hautapaakkanen（法术、物品及各类图像）
+                 Marika Velin（附加怪物与物品图像）
+                 Heta Kohonen（附加怪物与物品图像）
+                 Gribby Bullock（装饰物件、怪物与物品图像）
+                 Alex Sundell（附加图像）
+                 Jenni Berg（附加怪物图像）
+                 Pinja Mansikkaviita（附加图像）
+                 Benjamin Tuppurainen（附加图像）
+                 Kim Tuppurainen（附加图像）
+                 Miika Tuppurainen（附加图像）
+                 Erika Meade（附加图像）
+                 Marianne Bekker（怪物与环境图像）
+                 Laura Hölttä（附加怪物图像）
+                 Joona Korhonen（附加怪物图像）
+                 Miro Pääkkönen（附加怪物图像）
+                 Remy Peura（附加怪物图像）
+                 Milo Uusitalo（附加怪物与物品图像）
+                 Robert Santala（附加物品图像）
+                 Anna-Marija Sabo（附加物品图像）
+                 Janne Gustafsson（附加图像）
+                 Mikko Kangas（项目管理）
+角色配音制作：   Tommi Gustafsson（项目管理）
+                 Mikko Lahti（语音文件剪辑）
+                 Viivi Nytorp（语音文件剪辑）
+                 Krista Rusanen（语音文件剪辑）
+                 Jessika Suvanto（语音文件剪辑）
+游戏测试：       Tommi Gustafsson
+                 Robert Santala
+                 Janne Rajamäki
+
+
+                                    特别鸣谢
+
+感谢 Martin Gurr 为 NetHack 开发的 Android 移植版
+
+
+                                  外部软件支持
+
+音频中间件：     FMOD Studio（由 Firelight Technologies Pty Ltd. 提供）
+
+
+                                    背景音乐
+Eric Matyas (soundimage.org)
+Avalkis (jukkaeronen.com)
+Yolanda Mott (www.yolandamott.com): A Elbereth Gilthoniel
+
+
+                                  社区贡献者
+
+Karn（噬魂剑 Stormbringer 与哀伤之刃 Mournblade 武器图像）
+
+
+                                    其他资源
+
+属性状态图标：   Freepik
+音效素材：       Zapsplat
+
+
+                                  配音演员 (VOICE ACTORS)
+
+Yolanda Mott                  精灵吟游诗人琳迪丝 (Lindisse, Elven Bard)
+James Takahashi               严多巫师 (Wizard of Yendor)
+Callum Garner                 桑德斯汀魔灵 (Sandestin)
+Carrick Inabnett              小恶魔（男）(Imp, Male)
+Veronica Laux                 小恶魔（女）(Imp, Female)
+Eric Navarro                  天使（男）(Angel, Male)
+Joanna Christina Tenderro     旁白 (Narrator)
+                              天使（女）(Angel, Female)
+Natalia Makarski              六臂蛇魔玛莉莉丝 (Marilith)
+Paul Warren                   店主（男）(Shopkeeper, Male)
+Isabella Tugman               店主（女）(Shopkeeper, Female)
+Kevin Urban                   亡灵店主 (Shopkeeper, Undead)
+Dean T. Moody                 卡纳冯勋爵（考古学家职业试炼）(Lord Carnarvon)
+Ryan Chamberlain              胡赫托特尔的爪牙（考古学家职业试炼）(Minion of Huhetotl)
+Hussein "HSE" Mohammed        男学生（考古学家职业试炼）(Student, Male)
+Kaylie Horowitz               女学生（考古学家职业试炼）(Student, Female)
+                              女战士（女武神职业试炼）(Warrior, Female)
+Andrew J. Pond                佩利亚斯（野蛮人职业试炼）(Pelias)
+Edwyn Tiong                   托特·阿蒙（野蛮人职业试炼）(Thoth Amon)
+Carl Bonebright               男酋长（野蛮人职业试炼）(Chieftain, Male)
+Katte Noel                    女酋长（野蛮人职业试炼）(Chieftain, Female)
+Eric Umstott                  男祭司 (Priest)
+Lissa G. Comess               女祭司 (Priestess)
+Brian Anderson                摩洛克高阶男祭司 (High Priest of Moloch)
+Nina Nikolic                  摩洛克高阶女祭司 (High Priestess of Moloch)
+                              高阶量子力学家（女）(Elder Quantum Mechanic, Female)
+                              女神（备用语音）(Goddess, Alternate Voice)
+Cory Koehler                  男神 (God)
+Leader Looi                   女神 (Goddess)
+Kat Peterson                  德尔斐神谕先知 (Oracle)
+Drew Veurink                  男铁匠 (Smith, Male)
+Rin Araneta                   女铁匠 (Smith, Female)
+Tom Laflin                    亡灵铁匠 (Smith, Undead)
+                              亡灵炼金术士/工匠 (Artificer, Undead)
+Ryan Haugen                   弗林德豺狼人铁匠 (Smith, Flind)
+                              基斯顿警员 (Keystone Kop)
+Sean Siegler                  男炼金术士/工匠 (Artificer, Male)
+                              高阶量子力学家（男）(Elder Quantum Mechanic, Male)
+                              恩迪科特·沃特利 (Endicott Whateley)
+Sonja Palmu                   女炼金术士/工匠 (Artificer, Female)
+Henry Martin                  矮人地质学家（男）(Dwarven Geologist, Male)
+Kayla Kelly                   矮人地质学家（女）(Dwarven Geologist, Female)
+Jacob McClendon               亡灵矮人地质学家 (Dwarven Geologist, Undead)
+                              王座厅通报官 (Throne Room Announcer)
+Austin Stamper                男巡夜卫兵 (Watchman)
+Whitney Kraatz                女巡夜卫兵 (Watchwoman)
+Scott J. Zim                  金库男守卫 (Vault Guard, Male)
+Megan Youmans                 金库女守卫 (Vault Guard, Female)
+Jorge Livingston              灯神 (Djinn)
+Sarah Glyszon                 诺恩命运女神（女武神职业试炼）(The Norn)
+Matt Surges                   苏尔特尔领主（女武神职业试炼）(Lord Surtur)
+Jerron Bacat                  男战士（女武神职业试炼）(Warrior, Male)
+Sharon Grünwald               绿袍奈费蕾特（巫师职业试炼）(Neferet the Green)
+Colin Peter                   暗黑魔王（巫师职业试炼）(Dark One)
+Robert Bilodeau               男学徒（巫师职业试炼）(Apprentice, Male)
+Courtney Steele               女学徒（巫师职业试炼）(Apprentice, Female)
+Anthony Rodriguez             尼安德特人（男）（洞穴人职业试炼）(Neanderthal, Male)
+Zaida-Joy Davis               尼安德特人（女）（洞穴人职业试炼）(Neanderthal, Female)
+                              女侍从（医者职业试炼）(Attendant, Female)
+Harry Frost                   希波克拉底（医者职业试炼）(Hippocrates)
+AveryLuna                     独眼巨人（医者职业试炼）(Cyclops)
+Alex Lafnitzegger             男侍从（医者职业试炼）(Attendant, Male)
+Stephen Carlock               亚瑟王（骑士职业试炼）(King Arthur)
+Austin Adam                   伊克索斯（骑士职业试炼）(Ixoth)
+                              耶诺古 (Yeenaghu)
+Jason Hall                    男侍童（骑士职业试炼）(Page, Male)
+Roanna Cruz                   女侍童（骑士职业试炼）(Page, Female)
+Oliver Smith                  大宗师（武僧职业试炼）(Grand Master)
+                              兽人隐士海乌恩 (Haiuun, Orc Hermit)
+                              男性矮人 (Dwarf, Male)
+MushyTales                    凯恩大师（武僧职业试炼）(Master Kane)
+Branden Worton                男方丈（武僧职业试炼）(Abbot)
+JokoVoices                    女住持（武僧职业试炼）(Abbess)
+DaRoninEnigma                 俄里翁（游侠职业试炼）(Orion)
+Incognitocas                  天蝎魔斯科普斯（游侠职业试炼）(Scorpius)
+Robert Bilodeau               男猎人（游侠职业试炼）(Hunter, Male)
+Angela McCarthy               女猎人（游侠职业试炼）(Hunter, Female)
+Hutygags                      佐藤领主（武士职业试炼）(Lord Sato)
+Xieken                        足利尊氏（武士职业试炼）(Ashikaga Takauji)
+Daniel Doan                   男禅师/浪人导师（武士职业试炼）(Roshi, Male)
+Anna Faye                     女禅师/浪人导师（武士职业试炼）(Roshi, Female)
+Larry Womac                   盗贼公会大师（盗贼与游客职业试炼）(Master of Thieves)
+Nelson Abrego                 刺客大师（盗贼职业试炼）(Master Assassin)
+Alex Daniels                  男暴徒（盗贼职业试炼）(Thug, Male)
+Gina Moravec                  女暴徒（盗贼职业试炼）(Thug, Female)
+Ray O'Hare                    双花（游客职业试炼）(Twoflower)
+Jon Kava                      男导游（游客职业试炼）(Guide, Male)
+Vera Tan                      女导游（游客职业试炼）(Guide, Female)
+Jordan Semrow                 大主教（祭司职业试炼）(Arch Priest)
+Mark W. Coulter               纳尔佐克（祭司职业试炼）(Nalzok)
+Danny Spiller                 男侍祭（祭司职业试炼）(Acolyte, Male)
+                              男性半身人 / 地精 (Halfling / Gnome, Male)
+Sam Slade                     女侍祭（祭司职业试炼）(Acolyte, Female)
+Nick Alfano                   摩洛克（祭司职业试炼）(Moloch)
+Alex Lamoureux                隐士邓沃德·科斯 (Dunward Cos, Hermit)
+Nate Barham                   隐士爱德华·邓利 (Eduard Dunley, Hermit)
+Stan Morris                   隐士赫伯特·里德 (Herbert Reed, Hermit)
+Ross Camsell                  男量子力学家 (Quantum Mechanic, Male)
+Jva25                         女量子力学家 (Quantum Mechanic, Female)
+Roma Garustovich              男性人类 / 精灵 (Human / Elf, Male)
+Vivian Reed                   女性人类 / 精灵 (Human / Elf, Female)
+Heather Nichols               女性矮人 (Dwarf, Female)
+Darius Jackson                男性兽人 / 食人魔 (Orc / Ogre, Male)
+Gwyneth Evans                 女性兽人 / 食人魔 (Orc / Ogre, Female)
+Richard Gibson                男性豺狼人 (Gnoll, Male)
+Lilly Aly                     女性豺狼人 (Gnoll, Female)
+A. Andres Echeverry           男性哥布林 / 狗头人 (Goblin / Kobold, Male)
+Allie Goodell                 女性哥布林 / 狗头人 (Goblin / Kobold, Female)
+Eden Solomon                  女性半身人 / 地精 (Halfling / Gnome, Female)
+Justice Margowski             男性亡灵 (Undead, Male)
+Melissa Bowens                女性亡灵 (Undead, Female)

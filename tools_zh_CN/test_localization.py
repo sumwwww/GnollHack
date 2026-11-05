@@ -47,6 +47,35 @@ class LocalizationTests(unittest.TestCase):
         command = [sys.executable, str(ROOT / 'tools_zh_CN/validate_native_messages.py')]
         subprocess.run(command, check=True)
 
+    def test_static_content_overlay_preserves_game_data_structure(self):
+        command = [
+            sys.executable,
+            str(ROOT / 'tools_zh_CN/apply_content_zh_cn.py'),
+            '--repo', str(ROOT),
+            '--check-only',
+        ]
+        result = subprocess.run(command, check=True, capture_output=True, text=True, encoding='utf-8')
+        self.assertIn('Validated 15 zh-CN content files; errors: 0', result.stdout)
+
+    def test_static_content_overlay_is_copied_to_build_inputs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+            manifest = json.loads((ROOT / 'tools_zh_CN/content_zh_CN/MANIFEST.json').read_text(encoding='utf-8'))
+            for relative in manifest['files']:
+                source = repo / relative
+                translated = repo / 'tools_zh_CN/content_zh_CN' / relative
+                source.parent.mkdir(parents=True, exist_ok=True)
+                translated.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(ROOT / relative, source)
+                shutil.copyfile(ROOT / 'tools_zh_CN/content_zh_CN' / relative, translated)
+            manifest_target = repo / 'tools_zh_CN/content_zh_CN/MANIFEST.json'
+            manifest_target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / 'tools_zh_CN/content_zh_CN/MANIFEST.json', manifest_target)
+            command = [sys.executable, str(ROOT / 'tools_zh_CN/apply_content_zh_cn.py'), '--repo', str(repo)]
+            subprocess.run(command, check=True, capture_output=True, text=True, encoding='utf-8')
+            for relative in manifest['files']:
+                self.assertEqual((repo / relative).read_bytes(), (repo / 'tools_zh_CN/content_zh_CN' / relative).read_bytes(), relative)
+
 
 if __name__ == '__main__':
     unittest.main()
