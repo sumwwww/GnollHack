@@ -1,5 +1,4 @@
 """Regression checks for compiler-name preservation and display dictionary generation."""
-import importlib.util
 import json
 from pathlib import Path
 import shutil
@@ -18,7 +17,7 @@ class LocalizationTests(unittest.TestCase):
             repo = Path(directory)
             for folder in ('tools_zh_CN', 'include', 'src', 'dat', 'win/win32/xpl/GnollHackX', 'win/win32/xpl/GnollHackM'):
                 (repo / folder).mkdir(parents=True, exist_ok=True)
-            for relative in ('tools_zh_CN/apply_zh_cn_patch.py', 'include/artilist_zh_cn.h', 'src/objects_zh_cn.c', 'src/monst_role_skill_zh_cn.c', 'src/spells_zh_cn.c', 'win/win32/xpl/GnollHackX/XamlTranslationDict_zh_CN.json'):
+            for relative in ('tools_zh_CN/apply_zh_cn_patch.py', 'tools_zh_CN/native_messages_zh_CN.json', 'tools_zh_CN/validate_native_messages.py', 'include/artilist_zh_cn.h', 'src/objects_zh_cn.c', 'src/monst_role_skill_zh_cn.c', 'src/spells_zh_cn.c', 'win/win32/xpl/GnollHackX/XamlTranslationDict_zh_CN.json'):
                 shutil.copyfile(ROOT / relative, repo / relative)
             protected = ('src/objects.c', 'src/monst.c', 'src/role.c', 'include/artilist.h', 'include/global.h', 'dat/test.des')
             original = b'/* native lookup names */\n"crystal ball"\n"tentacled one"\n#define BUFSZ 256\n'
@@ -36,11 +35,17 @@ class LocalizationTests(unittest.TestCase):
             generated = repo / 'win/win32/xpl/GnollHackM/GnhZhCnDictionary.g.cs'
             first = generated.read_bytes()
             self.assertIn('水晶球', first.decode('utf-8'))
+            self.assertIn('MessageRule', first.decode('utf-8'))
+            self.assertIn('撞穿了', first.decode('utf-8'))
             for name in ('GnollHackX', 'GnollHackM'):
                 tree = ET.parse(repo / ('win/win32/xpl/' + name + '/test.xaml'))
                 self.assertEqual([e.attrib['Text'] for e in tree.findall('Label')], list(translations.values()))
             subprocess.run(command, check=True)
             self.assertEqual(generated.read_bytes(), first)
+
+    def test_imported_messages_preserve_printf_contracts(self):
+        command = [sys.executable, str(ROOT / 'tools_zh_CN/validate_native_messages.py')]
+        subprocess.run(command, check=True)
 
 
 if __name__ == '__main__':
