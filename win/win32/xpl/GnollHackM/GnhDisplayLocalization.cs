@@ -61,7 +61,8 @@ namespace GnollHackX
         {
             if (text == null) return null;
             if (Words.TryGetValue(text, out var translated)) return translated;
-            return TranslateMessageTemplate(text);
+            string messageTranslation = TranslateMessageTemplate(text);
+            return GnhZhCnTranslator.Translate(messageTranslation);
         }
 
         private static Dictionary<string, List<MessageRule>> BuildMessageIndex()

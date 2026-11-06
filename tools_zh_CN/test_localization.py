@@ -1,6 +1,7 @@
 """Regression checks for compiler-name preservation and display dictionary generation."""
 import json
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -9,6 +10,10 @@ import unittest
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
+PRINTF = re.compile(
+    r"%(?:%|(?:\d+\$)?[-+#0 ]*(?:\d+|\*)?(?:\.(?:\d+|\*))?"
+    r"(?:hh|ll|[hljztL])?[diuoxXfFeEgGaAcspn])"
+)
 
 
 class LocalizationTests(unittest.TestCase):
@@ -27,8 +32,9 @@ class LocalizationTests(unittest.TestCase):
             dictionary = repo / 'win/win32/xpl/GnollHackX/XamlTranslationDict_zh_CN.json'
             dictionary.write_text(json.dumps({'translations': translations, 'attributes_to_translate': ['Text']}, ensure_ascii=False), encoding='utf-8')
             for name in ('GnollHackX', 'GnollHackM'):
-                (repo / ('win/win32/xpl/' + name + '/test.xaml')).write_text('<Page><Label Text="Settings? (Advanced)"/><Label Text="A &amp; B"/></Page>', encoding='utf-8')
-            command = [sys.executable, str(repo / 'tools_zh_CN/apply_zh_cn_patch.py'), '--repo', str(repo)]
+                (repo / ('win/win32/xpl/' + name + '/test.xaml')).write_text('<Page><Label Text="Settings? (Advanced)" FontFamily="Diablo"/><Label Text="A &amp; B"/></Page>', encoding='utf-8')
+            (repo / 'win/win32/xpl/GnollHackM/Theme.cs').write_text('public class Theme { public string FontFamily = "Immortal"; }', encoding='utf-8')
+            command = [sys.executable, str(repo / 'tools_zh_CN/apply_zh_cn_patch.py'), '--repo', str(repo), '--skip-native-c']
             subprocess.run(command, check=True)
             for name in protected:
                 self.assertEqual((repo / name).read_bytes(), original, name)
@@ -40,12 +46,54 @@ class LocalizationTests(unittest.TestCase):
             for name in ('GnollHackX', 'GnollHackM'):
                 tree = ET.parse(repo / ('win/win32/xpl/' + name + '/test.xaml'))
                 self.assertEqual([e.attrib['Text'] for e in tree.findall('Label')], list(translations.values()))
+                self.assertEqual(tree.find('Label').attrib['FontFamily'], 'Microsoft YaHei UI')
+            self.assertIn('FontFamily = "Microsoft YaHei UI"', (repo / 'win/win32/xpl/GnollHackM/Theme.cs').read_text(encoding='utf-8'))
             subprocess.run(command, check=True)
             self.assertEqual(generated.read_bytes(), first)
 
     def test_imported_messages_preserve_printf_contracts(self):
         command = [sys.executable, str(ROOT / 'tools_zh_CN/validate_native_messages.py')]
         subprocess.run(command, check=True)
+
+    def test_c_message_map_matches_native_sources_and_runtime_hook(self):
+        payload = json.loads((ROOT / 'tools_zh_CN/zh_cn_c_locations.json').read_text(encoding='utf-8'))
+        entries = payload.get('c_locations', [])
+        self.assertEqual(len(entries), 2253)
+        source_lines = {}
+
+        def has_unescaped_quote(value):
+            backslashes = 0
+            for character in value:
+                if character == '\\':
+                    backslashes += 1
+                elif character == '"':
+                    if backslashes % 2 == 0:
+                        return True
+                    backslashes = 0
+                else:
+                    backslashes = 0
+            return False
+
+        for entry in entries:
+            relative = Path(entry['path'])
+            self.assertEqual(relative.parts[0], 'src')
+            self.assertEqual(relative.suffix, '.c')
+            self.assertEqual(PRINTF.findall(entry['source']), PRINTF.findall(entry['translation']))
+            self.assertNotIn('\ufffd', entry['translation'])
+            self.assertFalse(has_unescaped_quote(entry['translation']), f"Unescaped quote: {relative}:{entry['line']}")
+            if relative not in source_lines:
+                source_lines[relative] = (ROOT / relative).read_text(encoding='utf-8-sig').splitlines()
+            lines = source_lines[relative]
+            target = max(0, int(entry['line']) - 1)
+            self.assertTrue(
+                any('"' + entry['source'] + '"' in line for line in lines[max(0, target - 25):target + 26]),
+                f"C source site moved or changed: {relative}:{entry['line']}",
+            )
+        runtime = (ROOT / 'include/gnh_zh_cn_runtime.h').read_text(encoding='utf-8-sig')
+        self.assertIn('gnh_zh_fix_pline_fmt', runtime)
+        runtime_rows = re.findall(r'^\s*\{ ".*", ".*" \},$', runtime, re.MULTILINE)
+        self.assertEqual(len(runtime_rows), 2015)
+        self.assertIn('int hi = 2014;', runtime)
 
     def test_static_content_overlay_preserves_game_data_structure(self):
         command = [
