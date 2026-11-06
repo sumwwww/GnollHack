@@ -1,0 +1,261 @@
+不受特定编译标志限制的布尔选项（方括号 [] 内为默认值）：
+（你可以通过在游戏内按 'O' 命令查看当前选项设置，来了解你所运行的
+版本支持哪些具体选项。）
+
+acoustics      角色是否能够听到环境音效与声音提示                 [TRUE]
+autodescribe   自动描述光标所在位置的地形与事物                   [FALSE]
+autodig        手持挖掘工具移动撞墙时是否自动进行挖掘             [FALSE]
+autoopen       走向紧闭的门时是否自动尝试开门                     [TRUE]
+autopickup     经过地面物品时是否自动将其拾起                     [TRUE]
+autoquiver     当箭袋为空且尝试射击时，是否自动从物品栏中         [FALSE]
+               挑选合适的投射武器装填进箭袋
+BIOS           允许在 IBM PC 兼容机上调用 ROM BIOS 中断           [FALSE]
+blind          角色开局即处于永久失明状态（挑战模式）             [FALSE]
+bones          允许加载其他阵亡玩家留下的遗骨楼层（bones 文件）   [TRUE]
+clicklook      点击鼠标右键时查看地图格信息                       [FALSE]
+cmdassist      对方向输入错误及其他常见命令误操作提供辅助提示     [TRUE]
+confirm        攻击温顺宠物或和平怪物前弹出安全确认提示           [TRUE]
+dark_room      以不同颜色区分显示视野之外的房间地板               [TRUE]
+eight_bit_tty  直接向终端发送 8 位元字符                          [FALSE]
+extmenu        tty、curses：将 #（扩展命令）显示为菜单进行选择    [FALSE]
+               X11：菜单显示全部命令 (T) 或传统子集 (F)
+fixinv         尽量为同一件物品固定保留相同的物品栏字母编号       [TRUE]
+force_invmenu  凡提示选择物品栏物品的命令一律弹出菜单选择         [FALSE]
+goldX          按祝福/诅咒状态筛选物品时，将金币归类为            [FALSE]
+               X（状态未知）还是 U（未受诅咒）
+help           使用 / 命令查询地图事物时打印全部可用详细信息      [TRUE]
+herecmd_menu   用鼠标点击自身或紧邻自身的格子时，弹出当前         [FALSE]
+               可执行操作命令的快捷菜单
+ignintr        忽略中断信号（包括 Ctrl-C / Break 信号）           [FALSE]
+implicit_uncursed  若已知物品未受诅咒，则在物品栏中省略“未受诅咒” [TRUE]
+legacy         开局时打印经典的引导背景寄语                       [TRUE]
+lit_corridor   若昏暗走廊处于视野范围内，则将其作为亮处显示       [FALSE]
+lootabc        翻找箱包容器时使用 a/b/c 而非 o/i/b 快捷键         [FALSE]
+mail           启用信使投递邮件机制（mail daemon）                [TRUE]
+mention_walls  撞向墙壁移动时给出文字提示反馈                     [FALSE]
+menu_objsyms   若菜单项可选，则在菜单中显示物品的类别符号         [FALSE]
+menu_overlay   将菜单叠加显示在主屏幕上并靠右对齐                 [TRUE]
+nudist         角色开局时不穿戴任何护甲（裸奔挑战模式）           [FALSE]
+null           允许向终端发送空字符（NUL）以实现延时              [TRUE]
+               如果移动中的飞行物看起来像是在房间里瞬移，请尝试
+               关闭此选项（强制 GnollHack 使用内置延时代码）
+perm_invent    在常驻独立窗口中实时显示物品栏                     [FALSE]
+pickup_thrown  对自己投掷出去的物品无视 pickup_types 自动捡起     [TRUE]
+pushweapon     装备新武器时，自动将原先持握的武器移入             [FALSE]
+               副手备用武器槽位
+rawio          允许使用原始输入输出模式（raw I/O）                [FALSE]
+rest_on_space  将空格键视为原地休息一回合的快捷键                 [FALSE]
+safe_pet       防止你在知情状态下无意中攻击自己的宠物             [TRUE]
+sanity_check   执行内部数据完整性检查                             [FALSE]
+showexp        在状态栏显示累计获得的经验值                       [FALSE]
+showrace       以你的种族符号而非职业符号来显示角色自身           [FALSE]
+silent         禁用终端蜂鸣器提示音                               [TRUE]
+sortpack       在物品栏中将同类物品归组排列                       [TRUE]
+sparkle        当魔法攻击被抗性抵御时显示闪烁特效（例如对         [TRUE]
+               具有火焰抗性的怪物施放火焰攻击）
+standout       对消息末尾的 --More-- 提示使用反白高亮模式显示     [FALSE]
+status_updates 实时更新底部状态栏信息                             [TRUE]
+time           显示已流逝的游戏时间（按行动回合数计算）           [FALSE]
+tombstone      角色阵亡时打印墓碑画面                             [TRUE]
+toptenwin      在独立窗口而非标准输出（stdout）中打印高分榜       [FALSE]
+travel         启用通过最短路径算法自动行走到地图指定位置的       [TRUE]
+               行进命令（通常通过 '_' 键调用）。
+use_darkgray   使用加粗亮黑色而非蓝色来显示黑色字符图元。         [TRUE]
+use_inverse    以反色高亮方式显示被侦测到的怪物                   [FALSE]
+verbose        在游戏过程中打印更详尽的解说与提示信息             [TRUE]
+whatis_menu    获取地图位置时显示快捷操作菜单                     [FALSE]
+whatis_moveskip 获取地图位置移动光标时自动跳过相同的连续图元      [FALSE]
+
+
+此外还有若干由编译期宏标志控制的布尔选项。
+
+若编译时启用了 INSURANCE（崩溃保险）：
+checkpoint     每次切换楼层后自动保存游戏状态，以便在程序         [TRUE]
+               意外崩溃后尝试恢复进度
+
+若编译时启用了 NEWS（系统公告）：
+news           启动游戏时打印游戏管理员发布的最新公告信息         [TRUE]
+
+若编译时启用了 MFLOPPY（软盘模式）：
+checkspace     向磁盘写入文件前先检查剩余可用磁盘空间             [TRUE]
+
+若编译时启用了 SCORE_ON_BOTL（状态栏显示分数）：
+showscore      在状态栏显示当前估算的累计得分                     [FALSE]
+
+若编译时启用了 TEXTCOLOR（文本色彩）：
+color          为屏幕上的不同物体使用彩色显示     [微机端默认为 TRUE]
+hilite_pet     以高亮方式突出显示你的宠物                         [FALSE]
+hilite_pile    以高亮方式突出显示地面上的多件物品堆               [FALSE]
+
+若编译时启用了 TIMED_DELAY（仅限 tty 终端界面）：
+timed_delay    在 unix 与 VMS 系统上，暂停显示动画效果时使用      [TRUE]
+               计时器而非发送额外屏幕输出。在未链接 termcap 库
+               的 MSDOS 系统上，控制是否暂停以呈现视觉动画效果。
+
+Amiga 专属布尔选项，或其他平台编译时启用了 ALTMETA 的选项：
+altmeta        在 Amiga 上，将 Alt+按键视为 Meta+按键。           [TRUE]
+altmeta        在 unix 与 VMS 上，当游戏从玩家键盘读取命令时，    [FALSE]
+               将双字符序列 "ESC c" 视为 M-c（即 Meta+c，设置第 8 位）。
+
+若编译时启用了 USE_TILES（仅限 MSDOS 保护模式）：
+preload_tiles  控制是否在游戏启动时将所有图块预加载进内存。       [TRUE]
+               开启预加载可提升图块渲染性能，但会占用更多内存。
+
+若编译时启用了 TTY_TILES_ESCCODES（仅限 tty 终端界面）：
+vt_tiledata    在终端输出中插入额外的图块数据转义控制标记         [FALSE]
+
+任何布尔选项均可通过在名称前加上 '!' 或 'no' 前缀来取反（关闭）。
+
+
+复合选项（Compound options）的书写格式为：选项名:选项值（option_name:option_value）。
+
+可在游戏运行过程中随时修改的复合选项包括：
+
+boulder       覆盖默认的巨石显示符号                                     [`]
+disclose      游戏结束时你希望系统展示的结算信息类别   [ni na nv ng nc no]
+              （以空格分隔的双字符代码列表；
+              首字符前缀：'+' 总是直接展示，'-' 从不展示，
+              'n' 询问且默认为“否”，'y' 询问且默认为“是”，
+              'a' 询问并选择排序方式（仅适用于后缀 'v'）；
+              次字符后缀：'i' 物品栏，'a' 角色属性与内在能力，
+              'v' 已消灭的怪物列表，'g' 已灭绝与已绝种的怪物类别，
+              'c' 苦行守则保持记录，'o' 地牢探索总览）
+fruit         你最喜欢吃的一种水果名称                           [粘液霉 (slime mold)]
+              （主要是 GnollHack 偶尔用来自娱自乐的趣味彩蛋设定）。
+menustyle     选择多件物品时的用户界面交互风格：                      [Full]
+              Traditional -- 先提示输入感兴趣的物品大类符号，然后
+                             对该类别下的物品逐一询问确认；
+              Combination -- 先提示输入感兴趣的物品大类符号，然后
+                             弹出菜单供勾选具体物品；
+              Full        -- 先弹出物品大类菜单，再弹出具体物品菜单；
+              Partial     -- 跳过大类筛选，直接弹出包含全部物品的菜单；
+              设置时只需首字母（'T'、'C'、'F'、'P'）有效即可
+              （在 Traditional 传统模式下，许多操作允许输入伪类别 'm'
+              来临时请求弹出菜单挑选物品，即单次生效的 Combination 模式。）
+number_pad    使用字母键还是数字键控制移动方向：                         [0]
+               0 -- 传统的 hjkl + yubn 字母键八方向移动（默认）；
+               1 -- 数字键控制移动，适合配合数字小键盘使用；
+               2 -- 同 1，但数字键 '5' 充当 'g' 前缀而非 'G' 前缀；
+               3 -- 电话按键布局数字移动（1,2,3 在上，7,8,9 在下）；
+               4 -- 电话按键布局 (3) 与数字 '5' 偏好 (2) 的组合；
+              -1 -- 字母键移动，但将 'z' 与 'y' 键互换（适配德语等键盘）。
+              将 number_pad 设为正数值会影响所有数字键的处理方式，
+              而不仅限于小键盘区的数字键。
+packorder     当开启 'sortpack' 选项时，用于决定物品栏（及其他列表）  [")[%?+!=/(*`0_]
+              中各大类物品排列顺序的默认类别符号序列
+              （如果你只指定了部分物品类别符号，未列出的其余类别将按默认
+              顺序自动追加在末尾。）
+paranoid_confirmation  以空格分隔的列表        [paranoid_confirmation:pray]
+              指定在哪些危险场景下要求更严格的确认输入：
+              Confirm -- 凡要求输入完整 "yes" 确认时，拒绝也必须输入完整 "no"
+              quit    -- 放弃游戏或进入探索模式时必须输入完整 "yes" 而非 'y'
+              die     -- 在探索模式或调试模式中确认死亡时必须输入完整 "yes"
+              bones   -- 在调试模式中确认保存遗骨文件时必须输入完整 "yes"
+              attack  -- 确认攻击和平怪物时必须输入完整 "yes" 而非 'y'
+              pray    -- 尝试祈祷前需按 'y' 确认；默认开启
+              Remove  -- 使用 'R' 或 'T' 取下配饰/护甲时，即便身上只穿戴了
+              唯一一件可取下的对应装备，也总是强制从列表中手动选择
+pickup_burden 当拾取某件物品会导致你的负重状态超过此阈值级别时           [S]
+              （Unencumbered 轻松、Burdened 负重、streSsed 吃力、
+              straiNed 勉强、overTaxed 不堪重负、overLoaded 超载），
+              系统会询问你是否仍要继续拾取。
+pickup_types  开启自动拾取（autopickup）时，允许自动拾取的物品大类符号   []
+              列表；留空表示“拾取所有类别”
+pile_limit    走过地面物品堆时的消息提示阈值：当同一格物品数量达到或     [5]
+              超过此数值时，仅提示“这里有若干物品”而不逐一刷屏列出。
+              （设为 0 表示“总是列出全部物品”。）
+runmode       控制在多步连续移动（各种奔跑模式或 '_' 自动寻路）期间    [run]
+              地图窗口的刷新频率：
+              teleport -- 直到移动完全停止前不刷新地图（瞬间到达）；
+              run      -- 定期刷新地图（每移动 7 步更新一次画面）；
+              walk     -- 每移动一步都刷新一次地图；
+              crawl    -- 同 walk，但在每走一步后增加短暂延时。
+              （此选项仅影响屏幕视觉显示效果，不影响游戏内部实际移动逻辑。）
+scores        游戏结束时你希望查看的高分榜条目范围       [!own/3 top/2 around]
+              你可以自由组合最高分前几名（top）、你本次名次前后的分数
+              （around）以及你自己的历史最高分（own）。
+suppress_alert 禁用特定版本引入的玩法或界面变更提醒警告                  []
+              例如按下 'Q' 键时提示“退出游戏现已改为使用 #quit 命令”
+              （例如设置 suppress_alert:3.3.1 即可屏蔽该版本及更早版本
+              中添加的所有此类变更提醒）
+whatis_coord  控制在使用 '/' 和 ';' 命令且开启 autodescribe 时，是否     [n]
+              在描述中包含地图坐标信息。
+              取值为以下选项的首字母：
+              compass      -- 相对方位缩写（如 'east' 或 '3s' 或 '2n,4w'）
+              full compass -- 完整相对方位（如 'east' 或 '3south' 或 '2north,4west'）
+              map          -- <x,y> 绝对地图坐标（不使用 x=0 列）
+              screen       -- [row,column] 屏幕行列坐标（行号偏移匹配 tty 习惯）
+              none         -- 不显示坐标。
+whatis_filter 控制在为自动寻路（travel）等命令选择地图目标点时，如何     [n]
+              筛选合格的地图坐标位置。
+              取值为以下之一：
+              n - 不进行筛选
+              v - 仅限当前视野内的位置
+              a - 仅限同一区域（同一房间、走廊等）内的位置
+
+仅限在游戏启动时（通过配置文件或环境变量）设定的复合选项包括：
+
+align      你的初始阵营（lawful 守序、neutral 中立、chaotic 混乱      [random]
+           或 random 随机）。许多职业会将可选阵营限制在特定子集内。
+           你可以只输入首字母。
+catname    你的第一只宠物猫的名字                                     [none]
+dogname    你的第一只宠物狗的名字                                     [none]
+           部分自带宠物狗开局的职业拥有预设的狗名（例如武士 Samurai 的
+           忠犬默认名叫 "Hachi" 八公），但如果你指定了 dogname，预设名字
+           将被你指定的名字覆盖。
+gender     你的初始性别（male 男性、female 女性或 random 随机）。     [random]
+           你可以只输入首字母。虽然仍可使用旧版布尔选项 "male" 和
+           "female" 来指定性别，但 "gender" 选项优先级更高。
+horsename  你的第一匹宠物马的名字                                     [none]
+menu_*     为菜单操作命令指定单字符快捷键。
+           以下是所有菜单命令及其默认按键，括号内列出了支持它们的窗口移植版：
+           'x' 代表 X11，'t' 代表 tty，'g' 代表 Gem，'a' 代表 Amiga。
+           menu_deselect_all  取消全选菜单中的所有条目           [-](xtga)
+           menu_deselect_page 取消选中当前菜单页上的所有条目     [\](tga)
+           menu_first_page    跳转到菜单的第一页                 [^](tga)
+           menu_invert_all    反选菜单中的所有条目               [@](xtga)
+           menu_invert_page   反选当前菜单页上的所有条目         [~](tga)
+           menu_last_page     跳转到菜单的最后一页               [|](tga)
+           menu_next_page     翻到菜单的下一页                   [>](tga)
+           menu_previous_page 翻到菜单的上一页                   [<](tga)
+           menu_search        搜索菜单条目                       [:](xtga)
+           menu_select_all    全选菜单中的所有条目               [.](xtga)
+           menu_select_page   全选当前菜单页上的所有条目         [,](tga)
+msghistory 保存顶栏历史消息的最大条数                                   [20]
+name       你的角色名称        [多用户系统上默认使用当前系统用户名；单用户
+           系统上或当用户名属于 "games" 等通用名称时，会询问 "who are you?"]
+           MS Windows 尽管支持多用户账户，但在游戏中被视为单用户系统处理。
+           如果在命令行参数中指定了角色名称（通常通过 'nethack -u myname'，
+           具体取决于系统类型与启动方式），命令行名称将覆盖配置文件中的
+           'name' 选项。
+pettype    你偏好的初始宠物类型（cat 猫、dog 狗、horse 马、random 随机 [random]
+           或 none 不带宠物），前提是你的职业允许多种宠物类型（或者你希望
+           开局不带宠物）。大多数职业允许选择狗或猫，但不允许选马。对于
+           强制绑定特定宠物种类的职业，除非将 pettype 设为 'none'，否则
+           该选项会被忽略。
+playmode   正常计分游戏模式（normal）、不计分的探索模式（explore）或  [normal]
+           调试/巫师模式（debug）
+race       你的初始种族（例如 race:Human 人类、race:Elf 精灵）。      [random]
+           大多数职业会将可选种族限制在特定子集内。
+role       你的初始职业（例如 role:Barbarian 野蛮人、role:Valk 女武神）。[random]
+           虽然你可以只输入前几个字母，但系统只会匹配它找到的第一个符合
+           前缀的职业；因此建议尽可能拼写出完整的职业名称。你依然可以通过
+           在 "name" 选项后附加职业缩写来指定职业（如 name:Vic-V），但
+           "role" 选项具有更高优先级。
+windowtype 要使用的窗口界面系统          [取决于操作系统与编译期配置]
+           （当存在多种可用界面时）。大多数编译版本的程序仅内置支持一种
+           窗口类型；这种情况下你无需手动指定。若想查看当前程序支持的窗口
+           类型列表，可以在游戏运行时执行 #version 命令，或在游戏外部查看
+           构建时生成的 'options' 文本文件。
+
+若编译时启用了 TTY_GRAPHICS（终端字符图形）的复合选项：
+msg_window 要使用的消息窗口类型：                                   [single]
+           single      -- 每次仅显示一条消息
+           full        -- 打开完整窗口显示所有已保存的顶栏历史消息
+           reverse     -- 同 full，但按从新到旧的倒序排列显示消息
+           combination -- 先连续显示两条单行消息，随后切换为 full 完整窗口
+
+
+以下是一些选项配置列表的示例：
+!autopickup,!tombstone,name:Gandalf,scores:own/3 top/2 around
+female,nonews,dogname:Rover,rest_on_space,!verbose,menustyle:traditional

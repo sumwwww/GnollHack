@@ -5,10 +5,19 @@ on:
     inputs:
       configuration:
         description: "Build Configuration (Release or Debug)"
+        type: choice
+        options: [Release, Debug]
         required: true
         default: "Release"
   push:
-    branches: [ master, main, zh-CN ]
+    branches: [ master, main, zh-CN, "codex/zh-cn-build-and-localization" ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: winui3-zh-cn-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-winui3-zh-cn:
@@ -37,8 +46,16 @@ jobs:
       - name: Setup .NET 10.0 SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "10.0.x"
+          dotnet-version: "10.0.403"
           dotnet-quality: "ga"
+
+      - name: Verify localization preserves compiler inputs
+        shell: pwsh
+        run: |
+          python tools_zh_CN/test_localization.py
+          if ($LASTEXITCODE -ne 0) { throw "Localization regression check failed" }
+          python tools_zh_CN/apply_content_zh_cn.py --repo $PWD --check-only
+          if ($LASTEXITCODE -ne 0) { throw "Localized game-data validation failed" }
 
       - name: Fix Windows console encoding for UTF-8
         shell: pwsh
@@ -142,40 +159,76 @@ jobs:
           chcp 65001 | Out-Null
           $OutputEncoding = [System.Text.UTF8Encoding]::new()
           [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
-          dotnet workload install maui --ignore-failed-sources
+          dotnet workload install maui-windows
+          if ($LASTEXITCODE -ne 0) { throw "MAUI workload installation failed" }
 
       - name: Download Official Tile Sets & FMOD Sound Banks from GitHub Releases
         shell: pwsh
-        continue-on-error: true
         run: |
-          $ErrorActionPreference = "Continue"
+          $ErrorActionPreference = "Stop"
 
           New-Item -ItemType Directory -Force -Path "win/win32/tileset" | Out-Null
           New-Item -ItemType Directory -Force -Path "win/win32/bank/Desktop" | Out-Null
           New-Item -ItemType Directory -Force -Path "win/win32/bank/Mobile" | Out-Null
 
+          function Invoke-GitHubApiWithRetry {
+            param([Parameter(Mandatory = $true)][string]$Uri)
+            for ($attempt = 1; $attempt -le 4; $attempt++) {
+              try {
+                return Invoke-RestMethod -Uri $Uri -TimeoutSec 120
+              } catch {
+                if ($attempt -eq 4) { throw }
+                $delay = [int][Math]::Pow(2, $attempt - 1) * 5
+                Write-Host "GitHub API request failed (attempt $attempt/4); retrying in $delay seconds: $Uri"
+                Start-Sleep -Seconds $delay
+              }
+            }
+          }
+
+          function Invoke-DownloadWithRetry {
+            param(
+              [Parameter(Mandatory = $true)][string]$Uri,
+              [Parameter(Mandatory = $true)][string]$Destination
+            )
+            for ($attempt = 1; $attempt -le 4; $attempt++) {
+              try {
+                Invoke-WebRequest -Uri $Uri -OutFile $Destination -TimeoutSec 180
+                if (-not (Test-Path -LiteralPath $Destination) -or (Get-Item -LiteralPath $Destination).Length -eq 0) {
+                  throw "Downloaded file is missing or empty: $Destination"
+                }
+                return
+              } catch {
+                Remove-Item -LiteralPath $Destination -Force -ErrorAction SilentlyContinue
+                if ($attempt -eq 4) { throw }
+                $delay = [int][Math]::Pow(2, $attempt - 1) * 5
+                Write-Host "Asset download failed (attempt $attempt/4); retrying in $delay seconds: $Uri"
+                Start-Sleep -Seconds $delay
+              }
+            }
+          }
+
           Write-Host "Fetching latest GnollHackTileSet release assets..."
           try {
-            $tileRel = Invoke-RestMethod -Uri "https://api.github.com/repos/hyvanmielenpelit/GnollHackTileSet/releases/latest"
+            $tileRel = Invoke-GitHubApiWithRetry "https://api.github.com/repos/hyvanmielenpelit/GnollHackTileSet/releases/latest"
             foreach ($asset in $tileRel.assets) {
               if ($asset.name -match "\.png$|\.zip$") {
                 $dest = Join-Path "win/win32/tileset" $asset.name
-                Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $dest
+                Invoke-DownloadWithRetry $asset.browser_download_url $dest
                 if ($asset.name -match "\.zip$") {
                   Expand-Archive -Path $dest -DestinationPath "win/win32/tileset" -Force
                 }
               }
             }
           } catch {
-            Write-Warning "Could not auto-fetch GnollHackTileSet release: $_"
+            throw "Could not auto-fetch GnollHackTileSet release: $_"
           }
 
           Write-Host "Fetching latest GnollHackSoundSet release assets..."
           try {
-            $soundRel = Invoke-RestMethod -Uri "https://api.github.com/repos/hyvanmielenpelit/GnollHackSoundSet/releases/latest"
+            $soundRel = Invoke-GitHubApiWithRetry "https://api.github.com/repos/hyvanmielenpelit/GnollHackSoundSet/releases/latest"
             foreach ($asset in $soundRel.assets) {
               $dest = Join-Path "win/win32/bank" $asset.name
-              Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $dest
+              Invoke-DownloadWithRetry $asset.browser_download_url $dest
               if ($asset.name -match "\.zip$") {
                 Expand-Archive -Path $dest -DestinationPath "win/win32/bank" -Force
               } elseif ($asset.name -match "\.bank$") {
@@ -184,8 +237,26 @@ jobs:
               }
             }
           } catch {
-            Write-Warning "Could not auto-fetch GnollHackSoundSet release: $_"
+            throw "Could not auto-fetch GnollHackSoundSet release: $_"
           }
+
+      - name: Validate required downloaded resources
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $required = @(
+            "win/win32/tileset/gnollhack_64x96_transparent_32bits.png",
+            "win/win32/tileset/gnollhack_64x96_transparent_32bits-2.png",
+            "win/win32/tileset/gnollhack_64x96_transparent_32bits-3.png"
+          )
+          foreach ($bank in @("Auxiliary", "Intro", "Master", "Master.strings", "Music", "Preliminary")) {
+            $required += "win/win32/bank/Desktop/$bank.bank"
+          }
+          foreach ($file in $required) {
+            if (-not (Test-Path -LiteralPath $file -PathType Leaf)) { throw "Missing required asset: $file" }
+            if ((Get-Item -LiteralPath $file).Length -eq 0) { throw "Empty required asset: $file" }
+          }
+          $required | Get-FileHash -Algorithm SHA256 | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP/asset-hashes.json"
 
       - name: Apply Simplified Chinese (zh-CN) Localization Patch if present
         shell: pwsh
@@ -199,8 +270,11 @@ jobs:
           if (Test-Path $script) {
             Write-Host "Applying zh-CN patch: $script"
             python $script --repo $PWD
+            if ($LASTEXITCODE -ne 0) { throw "Localization generation failed" }
+            python (Join-Path $PWD "tools_zh_CN/apply_content_zh_cn.py") --repo $PWD
+            if ($LASTEXITCODE -ne 0) { throw "Localized game-data overlay failed" }
           } else {
-            Write-Warning "Localization patch script not found, skipping patch step."
+            throw "Localization patch script not found"
           }
 
       - name: Stage 1 - Build Native C99 Engine & nhdat Archive (GnollHack.sln x64)
@@ -229,8 +303,17 @@ jobs:
             /p:Configuration=$cfg `
             /p:Platform=x64 `
             /p:WindowsTargetPlatformVersion=$env:WIN_SDK_VERSION `
-            /p:WindowsTargetPlatformMinVersion=$env:WIN_SDK_VERSION `
+            /bl:"$env:RUNNER_TEMP/native-build.binlog" `
             /m:1
+          if ($LASTEXITCODE -ne 0) { throw "Native engine build failed" }
+
+      - name: Restore Windows client and build Sentry native component
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          dotnet restore "win/win32/xpl/GnollHackM/GnollHackM.csproj" -p:TargetFrameworks=net10.0-windows10.0.19041.0 -r win-x64
+          if ($LASTEXITCODE -ne 0) { throw "Windows restore failed" }
+          & "./win/win32/xpl/gnhsentrywin/Build-GnhSentry.ps1"
 
       - name: Stage 2 - Build Modern Windows WinUI 3 Client (GnollHackM.csproj)
         shell: pwsh
@@ -244,19 +327,48 @@ jobs:
           if ([string]::IsNullOrEmpty($cfg)) { $cfg = "Release" }
 
           Write-Host "Building WinUI app in CI mode with package signing disabled..."
+          $windowsAssets = "win/win32/xpl/GnollHackM/Platforms/Windows"
+          New-Item -ItemType Directory -Force -Path "$windowsAssets/banks", "$windowsAssets/tileset" | Out-Null
+          foreach ($bank in @("Auxiliary", "Intro", "Master", "Master.strings", "Music", "Preliminary")) {
+            Copy-Item -LiteralPath "win/win32/bank/Desktop/$bank.bank" -Destination "$windowsAssets/banks/$bank.bank" -Force -ErrorAction Stop
+          }
+          foreach ($stem in @("gnollhack_64x96_transparent_32bits", "gnollhack_64x96_transparent_32bits-2", "gnollhack_64x96_transparent_32bits-3")) {
+            Copy-Item -LiteralPath "win/win32/tileset/$stem.png" -Destination "$windowsAssets/tileset/$stem.ghpng" -Force -ErrorAction Stop
+          }
+          $communityConfig = "win/win32/xpl/GnollHackM/Assets/ghsecrets.sjson"
+          if (-not (Test-Path -LiteralPath $communityConfig)) {
+            New-Item -ItemType Directory -Force -Path (Split-Path $communityConfig) | Out-Null
+            "{}" | Set-Content -LiteralPath $communityConfig -Encoding utf8NoBOM
+          }
           dotnet publish "win/win32/xpl/GnollHackM/GnollHackM.csproj" `
             -c $cfg `
             -f net10.0-windows10.0.19041.0 `
+            -p:TargetFrameworks=net10.0-windows10.0.19041.0 `
+            -r win-x64 `
+            -p:Platform=x64 `
+            -bl:"$env:RUNNER_TEMP/client-publish.binlog" `
             -p:WindowsPackageType=None `
             -p:SelfContained=true `
             -p:AppxPackageSigningEnabled=false `
             -p:PackageCertificateThumbprint="" `
             -p:GenerateAppInstallerFile=false `
             -o "$env:RUNNER_TEMP/GnollHack_WinUI3_zhCN_Build"
+          if ($LASTEXITCODE -ne 0) { throw "Windows publish failed" }
 
       - name: Upload Compiled GnollHack WinUI3 Simplified Chinese Artifact
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
+          if-no-files-found: error
           name: GnollHack-WinUI3-zh-CN-Windows-x64
           path: ${{ runner.temp }}/GnollHack_WinUI3_zhCN_Build
+
+      - name: Upload diagnostic logs even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: winui3-zh-cn-diagnostics
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/*.binlog
+            ${{ runner.temp }}/asset-hashes.json

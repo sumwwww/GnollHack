@@ -1,0 +1,88 @@
+# GnollHack 4.0  engrave.txt       $NHDT-Date: 1524689579 2018/04/25 20:52:59 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.2 $
+# Copyright (c) 2015 by Pasi Kallinen
+# GnollHack may be freely redistributed.  See license for details.
+# Random engravings on the floor
+#
+Elbereth
+# trap engravings
+弗拉德到此一游
+ad aerarium
+
+# take-offs and other famous engravings
+猫头鹰之息（Owlbreath）
+加拉德瑞尔（Galadriel）
+基尔罗伊到此一游
+
+# Journey to the Center of the Earth
+A.S. ->
+<- A.S.
+# Adventure
+你是不可能把它搬上台阶的
+# Inferno
+入此门者，当放弃一切希望。
+# Prisoner
+欢迎光临（Well Come）
+# So Long...
+由此带来的不便，我们深表歉意。
+# Thriller
+下周三见
+# Smokey Stover
+notary sojak
+
+想找点乐子请拨打 8?7-5309
+# Various zoos around the world
+请勿投喂动物。
+# A palindrome
+女士，在伊甸园里，我是亚当。（Madam, in Eden, I'm Adam.）
+# Siskel & Ebert
+双手竖起大拇指！
+# The First C Program
+你好，世界！（Hello, World!）
+^?MAIL
+# AOL
+你有新邮件！
+^.
+# Clueless
+想得美！
+# 200x incarnation of Dr.Who
+坏狼（BAD WOLF）
+
+# Gang tag
+嗷呜——！严多的狼人万岁！
+
+# Strategy and pun
+在此挖掘，迈向胜利！
+
+# Pompeii
+盖乌斯·尤利乌斯·普里米根尼乌斯到此一游。你怎么才来？
+
+# Helpful guiding
+此路不通
+向左走 --->
+<--- 向右走
+X 标记处即宝藏所在
+X <--- 你在这里。
+此处有恶龙
+立即存档，快去写作业！
+这里曾经有个洞。现在已经没了。
+震动方块
+这是一个深坑！
+这不是你要找的地牢。
+当心，那扇门后面有个拿着死亡魔杖的地精！
+
+# Misc fun
+此格特意留白。
+
+# Viking graffiti
+硬斧哈尔蒙德刻下了这些符文
+
+# Advertising
+需要照明吗？欢迎光临伊扎克照明商店矿坑城镇分店！
+《星界位面上的蛇》——即将在你附近的地牢上映
+你是本站的第一百万名访客！请原地等待 200 回合以领取你的许愿魔杖。
+
+# DnD
+警告：爆裂符文！
+
+# "Whispers Underground" Ben Aaronovitch
+如果你能读懂这行字，那你不仅是个书呆子，而且多半已经死了。

@@ -1269,6 +1269,10 @@ namespace GnollHackX
         public int ClientCallback_AskName(string modeName, string modeDescription, IntPtr out_string_ptr)
         {
             Debug.WriteLine("ClientCallback_AskName");
+#if GNH_MAUI
+            modeName = GnhDisplayLocalization.Translate(modeName);
+            modeDescription = GnhDisplayLocalization.Translate(modeDescription);
+#endif
 
             _characternameSet = false;
             CharacterName = "";
@@ -1509,6 +1513,12 @@ namespace GnollHackX
 
         public int ClientCallback_YnFunction(int style, int attr, int color, int glyph, string title, string question, string responses, string def, string descriptions, string introline, ulong ynflags)
         {
+#if GNH_MAUI
+            title = GnhDisplayLocalization.Translate(title);
+            question = GnhDisplayLocalization.Translate(question);
+            introline = GnhDisplayLocalization.Translate(introline);
+            descriptions = GnhDisplayLocalization.Translate(descriptions);
+#endif
             if (question != null)
                 RawPrintEx(question, attr, color, false);
 
@@ -1680,18 +1690,27 @@ namespace GnollHackX
 
         public void RawPrintEx(string str, int attr, int color, bool is_restoring)
         {
+#if GNH_MAUI
+            str = GnhDisplayLocalization.Translate(str);
+#endif
             GHMsgHistoryItem newmsg = new GHMsgHistoryItem(str, attr, color);
             AddNewMessage(newmsg, is_restoring);
         }
 
         public void RawPrintEx2(string str, byte[] attrs, byte[] colors, int attr, int color, bool is_restoring)
         {
+#if GNH_MAUI
+            GnhDisplayLocalization.TranslateStyled(ref str, ref attrs, ref colors);
+#endif
             GHMsgHistoryItem newmsg = new GHMsgHistoryItem(str, attrs, colors, attr, color);
             AddNewMessage(newmsg, is_restoring);
         }
 
         public void ClientCallback_PutStrEx(int win_id, string str, int attributes, int color, int append)
         {
+#if GNH_MAUI
+            str = GnhDisplayLocalization.Translate(str);
+#endif
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.PutStrEx, win_id, str, attributes, color, append);
@@ -1736,6 +1755,9 @@ namespace GnollHackX
                 Marshal.Copy(colors_ptr, colors, 0, str_length + 1);
             }
 
+#if GNH_MAUI
+            GnhDisplayLocalization.TranslateStyled(ref str, ref attributes, ref colors);
+#endif
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.PutStrEx2, win_id, str, attributes, colors, attr, color, append);
@@ -1859,6 +1881,9 @@ namespace GnollHackX
             {
                 RecordFunctionCall(RecordedFunctionID.StatusEnable, fieldidx, nm, fmt, enable);
             }
+#if GNH_MAUI
+            nm = GnhDisplayLocalization.Translate(nm);
+#endif
             if (fieldidx >= 0 && fieldidx < (int)NhStatusFields.MAXBLSTATS)
             {
                 lock (StatusFieldLock)
@@ -1884,6 +1909,7 @@ namespace GnollHackX
 
         public void ClientCallback_StatusUpdate(int fieldidx, string text, long condbits, int cng, int percent, int color, IntPtr condcolorptr)
         {
+            string originalText = text;
             if(fieldidx != (int)NhStatusFields.BL_CONDITION)
             {
                 if (IsRecording)
@@ -1891,6 +1917,9 @@ namespace GnollHackX
                     RecordFunctionCall(RecordedFunctionID.StatusUpdate, fieldidx, text, condbits, cng, percent, color, null);
                 }
             }
+#if GNH_MAUI
+            text = GnhDisplayLocalization.Translate(text);
+#endif
 
             long oldbits = 0L;
             if (fieldidx >= 0 && fieldidx < (int)NhStatusFields.MAXBLSTATS)
@@ -1918,7 +1947,7 @@ namespace GnollHackX
                 case (int)NhStatusFields.BL_SKILL:
                     {
                         GHRequestType rtype;
-                        if (text != null && text == "Skill")
+                        if (originalText != null && originalText == "Skill")
                             rtype = GHRequestType.ShowSkillButton;
                         else
                             rtype = GHRequestType.HideSkillButton;
@@ -1989,7 +2018,11 @@ namespace GnollHackX
                                     }
 
                                     DisplayConditionTextData data = new DisplayConditionTextData();
+#if GNH_MAUI
+                                    data.text = GnhDisplayLocalization.Translate(GHGame.cond_names_long[i]);
+#else
                                     data.text = GHGame.cond_names_long[i];
+#endif
                                     data.style = 0;
                                     data.attr = 0;
                                     data.color = condcolor;
@@ -2171,6 +2204,9 @@ namespace GnollHackX
                 Marshal.Copy(colors_ptr, colors, 0, attrs_colors_size);
             }
 
+#if GNH_MAUI
+            GnhDisplayLocalization.TranslateStyled(ref text, ref attrs, ref colors);
+#endif
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.AddExtendedMenu, winid, glyph, identifier, accel, groupaccel, attr, color, text, presel,
@@ -2231,6 +2267,10 @@ namespace GnollHackX
 
         public void ClientCallback_EndMenu(int winid, string prompt, string subtitle)
         {
+#if GNH_MAUI
+            prompt = GnhDisplayLocalization.Translate(prompt);
+            subtitle = GnhDisplayLocalization.Translate(subtitle);
+#endif
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("EndMenu");
             if (IsRecording)
             {
@@ -2931,6 +2971,12 @@ namespace GnollHackX
 
         public int ClientCallback_GetLine(int style, int attr, int color, string query, string placeholder, string linesuffix, string introline, IntPtr out_string_ptr)
         {
+#if GNH_MAUI
+            query = GnhDisplayLocalization.Translate(query);
+            placeholder = GnhDisplayLocalization.Translate(placeholder);
+            linesuffix = GnhDisplayLocalization.Translate(linesuffix);
+            introline = GnhDisplayLocalization.Translate(introline);
+#endif
             return GetLine(style, attr, color, query, placeholder, linesuffix, introline, out_string_ptr, null);
         }
 
@@ -3003,6 +3049,10 @@ namespace GnollHackX
             {
                 RecordFunctionCall(RecordedFunctionID.AddContextMenu, cmd_def_char, cmd_cur_char, style, glyph, cmd_text, target_text, attr, color);
             }
+#if GNH_MAUI
+            cmd_text = GnhDisplayLocalization.Translate(cmd_text);
+            target_text = GnhDisplayLocalization.Translate(target_text);
+#endif
 
             AddContextMenuData data = new AddContextMenuData();
             data.cmd_def_char = cmd_def_char;
@@ -3216,6 +3266,9 @@ namespace GnollHackX
             {
                 RecordFunctionCall(RecordedFunctionID.DisplayFloatingText, x, y, text, style, attr, color, tflags);
             }
+#if GNH_MAUI
+            text = GnhDisplayLocalization.Translate(text);
+#endif
 
             DisplayFloatingTextData floatingTextData = new DisplayFloatingTextData();
             floatingTextData.x = x;
@@ -3234,6 +3287,11 @@ namespace GnollHackX
             {
                 RecordFunctionCall(RecordedFunctionID.DisplayScreenText, text, supertext, subtext, style, attr, color, tflags);
             }
+#if GNH_MAUI
+            text = GnhDisplayLocalization.Translate(text);
+            supertext = GnhDisplayLocalization.Translate(supertext);
+            subtext = GnhDisplayLocalization.Translate(subtext);
+#endif
 
             _screenTextSet = false;
             if ((tflags & 2UL) != 0)
@@ -3301,6 +3359,10 @@ namespace GnollHackX
             {
                 RecordFunctionCall(RecordedFunctionID.DisplayPopupText, text, title, style, attr, color, glyph, tflags);
             }
+#if GNH_MAUI
+            text = GnhDisplayLocalization.Translate(text);
+            title = GnhDisplayLocalization.Translate(title);
+#endif
 
             DisplayScreenTextData data = new DisplayScreenTextData();
             data.text = text;
@@ -4280,6 +4342,9 @@ namespace GnollHackX
             {
                 RecordFunctionCall(RecordedFunctionID.OutRip, winid, plname, points, killer, time);
             }
+#if GNH_MAUI
+            killer = GnhDisplayLocalization.Translate(killer);
+#endif
 
             if (FastForwardGameOver)
                 return;
@@ -4337,6 +4402,10 @@ namespace GnollHackX
             {
                 RecordFunctionCall(RecordedFunctionID.OpenSpecialView, viewtype, text, title, attr, color); //add time_stamp here later
             }
+#if GNH_MAUI
+            text = GnhDisplayLocalization.Translate(text);
+            title = GnhDisplayLocalization.Translate(title);
+#endif
             switch (viewtype)
             {
                 case (int)special_view_types.SPECIAL_VIEW_CHAT_MESSAGE:
@@ -4433,6 +4502,10 @@ namespace GnollHackX
                             Debug.WriteLine("Message in Replay: " + text);
                             break;
                         }
+#if GNH_MAUI
+                        title = GnhDisplayLocalization.Translate(title);
+                        text = GnhDisplayLocalization.Translate(text);
+#endif
                         _messageFinished = false;
                         RequestQueue.Enqueue(new GHRequest(this, GHRequestType.Message, title, text, null, null));
                         int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
@@ -4457,8 +4530,17 @@ namespace GnollHackX
                         char def = viewtype == (int)special_view_types.SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y ? 'y' : 'n'; ;
                         if (FastForwardGameOver)
                             return def;
+#if GNH_MAUI
+                        title = GnhDisplayLocalization.Translate(title);
+                        text = GnhDisplayLocalization.Translate(text);
+                        string yesText = GnhDisplayLocalization.Translate("Yes");
+                        string noText = GnhDisplayLocalization.Translate("No");
+#else
+                        string yesText = "Yes";
+                        string noText = "No";
+#endif
                         _ynConfirmationFinished = false;
-                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.YnConfirmation, title, text, "Yes", "No"));
+                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.YnConfirmation, title, text, yesText, noText));
                         int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
                         while (!_ynConfirmationFinished)
                         {

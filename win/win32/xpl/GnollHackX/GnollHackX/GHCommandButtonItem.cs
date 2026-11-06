@@ -15,6 +15,9 @@ namespace GnollHackX
 
         public GHCommandButtonItem(string text, string imgsrcpath, int command)
         {
+#if GNH_MAUI
+            text = GnhDisplayLocalization.Translate(text);
+#endif
             Text = text;
             ImageSourcePath = imgsrcpath;
             GHCommand = command;

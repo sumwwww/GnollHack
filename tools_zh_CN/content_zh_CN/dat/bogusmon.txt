@@ -1,0 +1,512 @@
+# GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-22
+
+# GnollHack 4.0  bogusmon.txt       $NHDT-Date: 1524689579 2018/04/25 20:52:59 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.7 $
+# Copyright (c) 2016 by Pasi Kallinen
+# GnollHack may be freely redistributed.  See license for details.
+#
+# Hallucinatory monsters
+#
+#
+# prefix codes:
+# dash          -  female, personal name
+# underscore    _  female, general name
+# plus          +  male, personal name
+# vertical bar  |  male, general name
+# equals        =  gender not specified, personal name
+
+# misc.
+巨型小虾米（jumbo shrimp）
+巨型侏儒（giant pigmy）
+角马（GNU）
+杀手企鹅
+巨型蟑螂
+巨型蛞蝓
+蛆虫
+翼手龙
+霸王龙
+石化蜥蜴（basilisk）
+守望者
+梦魇
+火巨灵（efreeti）
+水巨灵（marid）
+腐尸蛆
+书虫
+地衣宗师
+暗影
+全息影像
+弄臣小丑
+辩护律师
+下流怪
+杀人番茄
+亚马逊女战士
+机器人
+战斗机甲（BattleMech）
+鼻病毒
+鹰身女妖
+狮子狗
+鼠蚁怪
+千年虫（Y2K bug）
+愤怒的墨西哥流浪乐手
+究极学究怪
+幸福青鸟
+硬纸板魔像
+强力胶带魔像
+斜向移动的网格虫
+邪恶霸主
+新闻组喷子巨魔
+忍者海盗僵尸机器人
+八色魔法龙（octarine dragon）
+荒诞派记者
+网络延迟怪
+高利贷鲨鱼
+被附身的华夫饼烤模
+家禽恶灵（poultrygeist）
+毛绒浣熊手偶
+维京海盗
+绿色小软泥怪
+兽化鸭嘴兽人
+加粗老妖婆（hag of bolding）
+杏仁牛奶冻怪
+暴怒书呆子
+拼字蜜蜂（spelling bee）
+陆地章鱼
+青蛙王子
+飞天猪（pigasus）
+_半戈尔贡女妖（Semigorgon）
+漫展参会客
+大型小蝙蝠
+小型大狐蝠
+终极巨怪（uberhulk）
+素食豆腐火鸡
++达德利（Dudley）
+害羞紫罗兰
+肤浅潜行者（shallow one）
+真空中的球形奶牛
+
+# Quendor (Zork, &c.)
+格鲁暗影怪（grue）
+圣诞树怪
+吸运怪
+帕斯卡尔德怪（paskald）
+布罗格莫伊德怪（brogmoid）
+多恩巨兽（dornbeast）
+
+# Moria
+远古多彩巨龙
++邪恶伊吉（Evil Iggy）
+
+# Rogue V5 http://rogue.rogueforge.net/vade-mecum/
+响尾蛇
+寒冰怪
+幻影怪
+斑驴（quagga）
+锈水怪（aquator）
+狮鹫
+鸸鹋
+红隼
+拟态怪（xeroc）
+捕蝇草
+
+# Wizardry
+蠕动钱币堆
+
+# Greek legend
+九头蛇海德拉
+塞壬海妖
+
+# Monty Python
+杀人兔
+
+# The Princess Bride
+体型异常庞大的啮齿兽（R.O.U.S.）
+
+# Wallace & Gromit
+巨型人兔（were-rabbit）
+
+# "Only you can prevent forest fires!
++斯莫키防火熊（Smokey Bear）
+
+# Discworld
+多脚梨木行李箱（Luggage）
+吸血鬼西瓜
+
+# Lord of the Rings
+树人恩特（Ent）
+
+# Xanth
+纠缠树
+五分镍币蜈蚣
+扭扭虫（wiggle）
+
+# Lewis Carroll
+爱丽丝白兔
+斯纳克怪兽（snark）
+
+# Dr. Dolittle
+推我拉你双头兽
+
+# The Smurfs
+蓝精灵
+
+# Star Trek
+毛球兽（tribble）
+克林贡人
+博格人
+
+# Star Wars
+伊沃克人
+
+# Tonari no Totoro
+龙猫（Totoro）
+
+# Nausicaa
+王虫（ohmu）
+
+# Sailor Moon
+妖魔（youma）
+
+# Pokemon (Meowth)
+喵喵（nyaasu）
+
+# monster movies
+-哥斯拉（Godzilla）
++金刚（King Kong）
+
+# old L of SH
+地震兽
+
+# Robotech
+因维德外星人（Invid）
+
+# The Terminator
+终结者（Terminator）
+
+# Bubblegum Crisis
+人造人（boomer）
+
+# Dr. Who ("Exterminate!")
+戴立克（Dalek）
+
+# HGttG
+微观宇宙舰队
+特拉尔星球贪婪虫眼怪兽
+
+# TMNT
+忍者神龟
+
+# Usagi Yojimbo
+兔用心棒（武士兔）
+
+# Cerebus
+土豚
+
+# Little Shop of Horrors
+=食人花奥黛丽二世（Audrey II）
+
+# 50's rock 'n' roll
+巫医
+独眼独角会飞的紫色食人怪
+
+# saccharine kiddy TV
++紫色小恐龙巴尼（Barney）
+
+# Angband
++魔苟斯（Morgoth）
+
+# Babylon 5
+沃隆人（Vorlon）
+
+# King Arthur
+探索兽（questing beast）
+
+# Movie
+铁血战士（Predator）
+
+# common pest
+丈母娘
+
+# Actual creatures
+螳螂
+白鲸
+小鸡
+腔棘鱼
+星鼻鼹
+肺鱼
+蜂猴（懒猴）
+海参
+绦虫
+狮虎兽
+迅猛龙
+发福鼠海豚
+短尾矮袋鼠
+林鸱（potoo）
+旅鼠
+
+# european cryptids
+沃尔珀丁格角兔兽
+埃尔韦德里奇怪鸟
+松鸡兔（skvader）
++尼斯湖水怪（Nessie）
+阿尔卑斯猫头龙（tatzelwurm）
+达胡长短腿山羊（dahu）
+
+# fictitious beasts
+澳洲考拉坠落熊（dropbear）
+野生哈吉斯怪兽
+鹿角兔
+飞天猪
+海马兽
+鹰马
+凯尔派水马
+卡托布莱帕斯死视兽
+不死鸟凤凰
+双头蛇
+
+# Unusually animate body parts
+弹跳眼球
+漂浮鼻子
+游荡眼球
+
+# Computerese
+缓冲区溢出（buffer overflow）
+悬空指针（dangling pointer）
+行走的磁盘驱动器
+浮点数怪（floating point）
+正则表达式引擎
+网络分裂（netsplit）
+维基百科怪
+对等节点（peer）
+COBOL 语言怪
+
+# bugs
+玻尔确定性漏洞（bohrbug）
+曼德博混沌漏洞（mandelbug）
+薛定谔观测漏洞（schroedinbug）
+海森堡测不准漏洞（heisenbug）
+
+# DooM
+痛苦元素恶魔（cacodemon）
+斯克拉格飞龙怪（scrag）
+
+# MST3K
++克劳机器人（Crow T. Robot）
+
+# Items and stuff
+国际象棋兵卒
+巧克力布丁怪
+非牛顿流体软泥（ooblecks）
+兵马俑战士
+灵车
+扫地机器人 Roomba
+微型飞艇
+微尘颗粒
+
+# DnD monster
+凉亭怪（gazebo）
+
+# SciFi elements
+纳米灰蛊（gray goo）
+磁单极子
+第一类永动机
+巨型神秘天体（BDO）
+
+# Ultima
++不列颠尼亚领主（Lord British）
+
+# They Might Be Giants
+粒子人（particle man）
+
+# Robot Finds Kitten
+寻猫机器人
+
+# Typography
+法文书名号怪（«»）
+斜杠怪（/）
+除号怪（÷）
+印刷装饰符号怪（dingbat）
+粗体字怪
+牛耕式双向书写怪
+连字怪（ligature）
+画谜怪（rebus）
+
+# Their actual character
+撇号魔像
+丰满的合字号怪（&）
+
+# Web comics and animation
++愤怒的小花鲍勃
++强巴德（Strong Bad）
++魔法特雷弗（Magical Trevor）
+
+# KoL
+折翼独翅刺击蝙蝠
+
+# deities
+隐形粉红独角兽
+飞天意面神教怪物
+
+# Monkey Island
+三头猴
++恶魔巨鸡（El Pollo Diablo）
+
+# modern folklore
+外星小绿人
+
+# Portal
+加重同伴方块（Companion Cube）
+
+# /b/
+匿名版巨魔（/b/tard）
+
+# South Park
+人熊猪（manbearpig）
+
+# internet memes
+盆景小猫
+领带克苏鲁
++多摩君（Domo-kun）
+超——————长猫
+彩虹猫（Nyan Cat）
+
+# the Internet is made for cat pix
+天花板偷窥猫
+地下室暗黑猫
+单轨列车猫
+
+# POWDER
+三角怪人（tridude）
+
+# Radomir Dopieralski
+宇宙奥库斯
+
+# Angband
+伊克小妖（yeek）
+脉动肉团怪（quylthulg）
+高等地狱巨兽
+
+# Souljazz
++伊扎德小贩（Vendor of Yizard）
+
+# Dungeon Crawl Stone Soup
++西格蒙德（Sigmund）
+勒拿九头蛇
++伊吉布（Ijyb）
++格鲁克斯·弗洛克（Gloorx Vloq）
++兽人布洛克（Blork the orc）
+
+# Wil Wheaton, John Scalzi
+独角飞马小猫咪
+
+# Minecraft
+末影人（Enderman）
+
+# Pun
+尸妖至上主义者（wight supremacist）
+
+# Starcraft 2
+跳虫（zergling）
+
+# Feelings
+存在主义焦虑
+你想象力的产物
+灵光一闪
+
+# Fish
+错拼鱼（ghoti）
+
+# Roald Dahl
+外星食人蠕虫（vermicious knid）
+
+# Carcassonne
+桌游米宝小人（meeple）
+
+# The Wombles
+温布尔毛绒怪（womble）
+
+# Fraggle Rock
+弗拉格布偶怪（fraggle）
+
+# Spoonerism
+假冒职业怪（mock role，石巨魔谐音）
+
+# Truly scary things
+小丑
+哑剧演员
+推销小贩
+砍价狂魔
+
+# soundex and typos of monsters
+幸灾乐祸眼（漂浮眼谐音）
+冲水马桶魔像（血肉魔像谐音）
+殉道兽人
+迫击炮兽人
+酸液博客（酸液怪谐音）
+敏锐软泥怪
+咏叹调元素（气元素谐音）
+抗锯齿祭司（守序祭司谐音）
+守序寄生虫
+守序拼花地板
+守序监考官
+幼年倔强龙（幼年黑龙谐音）
+幼年布鲁斯蓝调龙（幼年蓝龙谐音）
+幼年漫画怪
+幼年钩针编织怪（幼年鳄鱼谐音）
+幼年颗粒龙（幼年绿龙谐音）
+幼年水烟虫（幼年长虫谐音）
+幼年长单词（幼年长虫谐音）
+幼年寓言虫（幼年紫虫谐音）
+呕吐魔鬼（倒钩魔谐音）
+啤酒尸妖（古墓尸妖谐音）
+粗鄙尸妖（古墓尸妖谐音）
+肌肉霉菌（棕色霉菌谐音）
+蹦迪蜘蛛（洞穴蜘蛛谐音）
+线索魔像（黏土魔像谐音）
+半身像漩涡（尘埃漩涡谐音）
+勘误表元素（土元素谐音）
+橡皮筋电鳗（电鳗谐音）
+心电图电鳗（电鳗谐音）
+冷杉木元素（火元素谐音）
+轮胎元素（火元素谐音）
+火烈鸟球体（烈焰球体谐音）
+逻辑谬误魔像（血肉魔像谐音）
+炸毛半人马（森林半人马谐音）
+森林画报女郎（森林半人马谐音）
+凶猛球体（冰冻球体谐音）
+糖霜巨人（霜巨人谐音）
+高龄老蛇（花园蛇谐音）
+蚋蚊巨蚁（巨蚁谐音）
+巨型浴缸（巨型蝙蝠谐音）
+科研基金甲虫（巨型甲虫谐音）
+刷怪网格虫（网格虫谐音）
+巨型芒果
+亮面魔像（玻璃魔像谐音）
+桂冠地精（地精领主谐音）
+地精假人（地精木乃伊谐音）
+更黏稠的软泥（灰色软泥谐音）
+绿色滑梯（绿色史莱姆谐音）
+玉米片守护纳迦（守护纳迦谐音）
+地狱犬双关语（地狱犬幼崽谐音）
+高阶纯粹主义者（高阶祭司谐音）
+发网魔鬼（角魔谐音）
+寒冰泥铲（冰巨魔谐音）
+杀人甜菜（杀人蜂谐音）
+羽毛魔像（皮革魔像谐音）
+休息室懒虫（长虫谐音）
+高山淋巴（山林仙女谐音）
+寻呼机魔像（纸魔像谐音）
+馅饼恶魔（深渊恶魔谐音）
+防护紫虫（紫虫谐音）
+袜子鼹鼠（岩鼹鼠谐音）
+流氓穿刺怪（岩石穿刺怪谐音）
+跷跷板球体（冰冻球体谐音）
+明喻拟态怪（小型拟态怪谐音）
+发霉兵蚁（兵蚁谐音）
+污渍漩涡（蒸汽漩涡谐音）
+司康饼巨人（石巨人谐音）
+雨伞巨怪（掘土巨怪谐音）
+吸血鬼钉头锤（吸血鬼法师谐音）
+话痨炸脖龙
+水柠檬（水恶魔谐音）
+大西瓜（水恶魔谐音）
+有翼灰熊（有翼石像鬼谐音）
+黄色尸妖（黄光怪谐音）

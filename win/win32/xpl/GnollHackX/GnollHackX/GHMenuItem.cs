@@ -49,6 +49,9 @@ namespace GnollHackX
             UseSpecialSymbols = useSpecialSymbols;
             ObjData = objData;
             GlyphImageSource.ObjData = objData;
+#if GNH_MAUI
+            text = GnhDisplayLocalization.Translate(text);
+#endif
             Text = text;
             Count = count;
             UseNumItems = useNumItems;

@@ -1,0 +1,21 @@
+{
+  "locale": "zh-CN",
+  "file_count": 15,
+  "files": [
+    "dat/help",
+    "dat/cmdhelp",
+    "dat/keyhelp",
+    "dat/hh",
+    "dat/opthelp",
+    "dat/wizhelp",
+    "dat/quest.txt",
+    "dat/oracles.txt",
+    "dat/history",
+    "dat/epitaph.txt",
+    "dat/engrave.txt",
+    "dat/bogusmon.txt",
+    "dat/credits",
+    "dat/xcredits",
+    "doc/Guidebook.txt"
+  ]
+}

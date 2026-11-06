@@ -5,9 +5,10 @@
   Inputs="$(ToolsDir)dlb.exe;@(DlbList);$(SysWinntDir)porthelp"
   Outputs="$(BinDir)nhdat">
 
+  <MakeDir Directories="$(BinDir)"/>
    <Copy SourceFiles="$(SysWinntDir)porthelp" DestinationFolder="$(DatDir)"/>
   <WriteLinesToFile File="$(DatDir)dlb.lst" Lines="@(DlbList->'%(filename)%(extension)')" Overwrite="true"/>
-  <Exec Command="$(ToolsDir)dlb.exe cIf $(DatDir)dlb.lst $(BinDir)nhdat" WorkingDirectory="$(DatDir)"/>
+  <Exec Command="&quot;$(ToolsDir)dlb.exe&quot; cIf &quot;$(DatDir)dlb.lst&quot; &quot;$(BinDir)nhdat&quot;" WorkingDirectory="$(DatDir)"/>
   <Delete Files="$(DatDir)porthelp"/>
 
    <Copy SourceFiles="$(BinDir)nhdat" DestinationFolder="$(MauiWindowsGnhDir)"/>

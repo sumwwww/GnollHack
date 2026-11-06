@@ -385,6 +385,9 @@ namespace GnollHackX
 
         public EquipmentSlot(string slotName, int pictureIndex, int altPictureIndex, int altPictureStyle, obj_worn_flags wornFlag, obj_class_types objClassType, obj_armor_types armorType)
         {
+#if GNH_MAUI
+            slotName = GnollHackX.GnhDisplayLocalization.Translate(slotName);
+#endif
             SlotName = slotName;
             PictureIndex = pictureIndex;
             AltPictureIndex = altPictureIndex;
