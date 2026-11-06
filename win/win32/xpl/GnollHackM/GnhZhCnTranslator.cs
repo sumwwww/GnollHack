@@ -1,21 +1,16 @@
 // win/win32/xpl/GnollHackM/GnhZhCnTranslator.cs
-// GnollHack 现代 Windows WinUI 3 (.NET 10 MAUI) 全量运行时简体中文翻译引擎与 SkiaSharp 中文字体桥接器
+// GnollHack 现代 Windows WinUI 3 (.NET 10 MAUI) 运行时简体中文翻译引擎
 
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using SkiaSharp;
 
 namespace GnollHackX
 {
     public static class GnhZhCnTranslator
     {
         public static bool Enabled { get; set; } = true;
-        private static SKTypeface _cjkRegular;
-        private static SKTypeface _cjkBold;
         private static readonly ConcurrentDictionary<string, string> _cache = new ConcurrentDictionary<string, string>(StringComparer.Ordinal);
 
         public static readonly Dictionary<string, string> ExactDict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -9025,138 +9020,6 @@ namespace GnollHackX
             ("paper ", "纸质"),
             ("hard crystal ", "硬水晶"),
         };
-
-        public static SKTypeface GetCjkTypeface(bool bold = false)
-        {
-            if (bold && _cjkBold != null) return _cjkBold;
-            if (!bold && _cjkRegular != null) return _cjkRegular;
-
-            string[] families = new string[]
-            {
-                "Microsoft YaHei UI",
-                "Microsoft YaHei",
-                "SimHei",
-                "DengXian",
-                "Noto Sans CJK SC"
-            };
-
-            var weight = bold ? SKFontStyleWeight.Bold : SKFontStyleWeight.Normal;
-            foreach (var fam in families)
-            {
-                var tf = SKTypeface.FromFamilyName(fam, weight, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
-                if (tf != null && !string.IsNullOrEmpty(tf.FamilyName))
-                {
-                    if (bold) _cjkBold = tf;
-                    else _cjkRegular = tf;
-                    return tf;
-                }
-            }
-            return SKTypeface.Default;
-        }
-
-        public static SKTypeface FromStreamCjk(Stream stream, int index = 0)
-        {
-            try { stream?.Dispose(); } catch { }
-            return GetCjkTypeface(false);
-        }
-
-        public static string PtrToStringUTF8Zh(IntPtr ptr)
-        {
-            if (ptr == IntPtr.Zero) return null;
-            return Translate(Marshal.PtrToStringUTF8(ptr));
-        }
-
-        public static string PtrToStringUTF8Zh(IntPtr ptr, int byteLen)
-        {
-            if (ptr == IntPtr.Zero) return null;
-            return Translate(Marshal.PtrToStringUTF8(ptr, byteLen));
-        }
-
-        public static string PtrToStringAnsiZh(IntPtr ptr)
-        {
-            if (ptr == IntPtr.Zero) return null;
-            string s = Marshal.PtrToStringUTF8(ptr);
-            if (string.IsNullOrEmpty(s))
-                s = Marshal.PtrToStringAnsi(ptr);
-            return Translate(s);
-        }
-
-        public static string PtrToStringAnsiZh(IntPtr ptr, int len)
-        {
-            if (ptr == IntPtr.Zero) return null;
-            string s = Marshal.PtrToStringUTF8(ptr, len);
-            if (string.IsNullOrEmpty(s))
-                s = Marshal.PtrToStringAnsi(ptr, len);
-            return Translate(s);
-        }
-
-        public static string Tr(string text) => Translate(text);
-        public static SKTextBlob Tr(SKTextBlob blob) => blob;
-        public static IntPtr Tr(IntPtr ptr) => ptr;
-        public static byte[] Tr(byte[] bytes) => bytes;
-        public static char[] Tr(char[] chars) => chars;
-
-        // === SkiaSharp SKCanvas.DrawText 扩展拦截方法 (零括号改动、100% 语法与重载安全) ===
-        public static void DrawTextZh(this SKCanvas canvas, string text, float x, float y, SKPaint paint)
-            => canvas.DrawText(Translate(text), x, y, paint);
-
-        public static void DrawTextZh(this SKCanvas canvas, string text, SKPoint p, SKPaint paint)
-            => canvas.DrawText(Translate(text), p, paint);
-
-        public static void DrawTextZh(this SKCanvas canvas, string text, float x, float y, SKFont font, SKPaint paint)
-            => canvas.DrawText(Translate(text), x, y, font, paint);
-
-        public static void DrawTextZh(this SKCanvas canvas, string text, SKPoint p, SKFont font, SKPaint paint)
-            => canvas.DrawText(Translate(text), p, font, paint);
-
-        public static void DrawTextZh(this SKCanvas canvas, string text, float x, float y, SKTextAlign textAlign, SKFont font, SKPaint paint)
-            => canvas.DrawText(Translate(text), x, y, textAlign, font, paint);
-
-        public static void DrawTextZh(this SKCanvas canvas, string text, SKPoint p, SKTextAlign textAlign, SKFont font, SKPaint paint)
-            => canvas.DrawText(Translate(text), p, textAlign, font, paint);
-
-        public static void DrawTextZh(this SKCanvas canvas, SKTextBlob text, float x, float y, SKPaint paint)
-            => canvas.DrawText(text, x, y, paint);
-
-        public static void DrawTextZh(this SKCanvas canvas, byte[] text, float x, float y, SKPaint paint)
-            => canvas.DrawText(text, x, y, paint);
-
-        public static void DrawTextZh(this SKCanvas canvas, IntPtr buffer, int length, float x, float y, SKPaint paint)
-            => canvas.DrawText(buffer, length, x, y, paint);
-
-        public static void DrawTextZh(this SKCanvas canvas, IntPtr buffer, IntPtr length, float x, float y, SKPaint paint)
-            => canvas.DrawText(buffer, length, x, y, paint);
-
-        // === SkiaSharp SKPaint.MeasureText & SKFont.MeasureText 扩展拦截方法 ===
-        public static float MeasureTextZh(this SKPaint paint, string text)
-            => paint.MeasureText(Translate(text));
-
-        public static float MeasureTextZh(this SKPaint paint, string text, ref SKRect bounds)
-            => paint.MeasureText(Translate(text), ref bounds);
-
-        public static float MeasureTextZh(this SKPaint paint, byte[] text)
-            => paint.MeasureText(text);
-
-        public static float MeasureTextZh(this SKPaint paint, byte[] text, ref SKRect bounds)
-            => paint.MeasureText(text, ref bounds);
-
-        public static float MeasureTextZh(this SKPaint paint, IntPtr buffer, int length)
-            => paint.MeasureText(buffer, length);
-
-        public static float MeasureTextZh(this SKPaint paint, IntPtr buffer, IntPtr length)
-            => paint.MeasureText(buffer, length);
-
-        public static float MeasureTextZh(this SKPaint paint, IntPtr buffer, int length, ref SKRect bounds)
-            => paint.MeasureText(buffer, length, ref bounds);
-
-        public static float MeasureTextZh(this SKPaint paint, IntPtr buffer, IntPtr length, ref SKRect bounds)
-            => paint.MeasureText(buffer, length, ref bounds);
-
-        public static float MeasureTextZh(this SKFont font, string text, SKPaint paint = null)
-            => font.MeasureText(Translate(text), paint);
-
-        public static float MeasureTextZh(this SKFont font, string text, out SKRect bounds, SKPaint paint = null)
-            => font.MeasureText(Translate(text), out bounds, paint);
 
         private static bool HasCjk(string s)
         {
