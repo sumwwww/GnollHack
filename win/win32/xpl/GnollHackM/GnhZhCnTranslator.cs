@@ -198,6 +198,7 @@ namespace GnollHackX
             { "Left Ring", "左手戒指" },
             { "Cloak", "斗篷" },
             { "Gloves", "手套" },
+            { "Things that are here:", "此处有：" },
         };
 
         public static readonly Dictionary<string, string> ExactDict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -9007,6 +9008,7 @@ namespace GnollHackX
             { "a blessed +3 mace", "受祝福的 +3 钉头锤" },
             { "being worn; better AC", "穿戴中；护甲等级更佳" },
             { "being worn; better MC", "穿戴中；魔法防护更佳" },
+            { "stash", "储物箱" },
         };
 
         public static readonly Dictionary<string, string> CombatVerbDict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -9379,6 +9381,24 @@ namespace GnollHackX
 
         private static bool TryTranslateInventoryText(string text, out string translated)
         {
+            Match namedChest = Regex.Match(text,
+                @"^see here (?<name>.+?) labeled (?<label>.+?)\s*\((?<weight>[0-9]+(?:\.[0-9]+)?)\s*lbs?\)\.?$",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            if (namedChest.Success)
+            {
+                string chestName = TranslateNounPhrase(namedChest.Groups["name"].Value.Trim());
+                string label = namedChest.Groups["label"].Value.Trim();
+                Match stashLabel = Regex.Match(label, @"^(?<owner>.+?)(?:'s|的)\s*stash$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+                string labelZh = stashLabel.Success
+                    ? stashLabel.Groups["owner"].Value.Trim() + "的储物箱"
+                    : TranslateNounPhrase(label);
+                if (chestName != namedChest.Groups["name"].Value.Trim())
+                {
+                    translated = $"你看到{chestName}，标签为“{labelZh}”（{namedChest.Groups["weight"].Value} 磅）。";
+                    return true;
+                }
+            }
+
             Match gemBag = Regex.Match(text, @"^(?<bag>.+?)\s+containing\s+(?<count>\d+)\s+gems?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
             if (gemBag.Success)
             {
