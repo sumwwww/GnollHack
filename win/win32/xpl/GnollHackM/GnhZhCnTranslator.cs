@@ -114,6 +114,90 @@ namespace GnollHackX
             { "human", "人类" },
             { "dwarven", "矮人" },
             { "Take Off Many", "批量脱下" },
+            { "Stats", "状态" },
+            { "Kick", "踢击" },
+            { "Repeat", "重复" },
+            { "Swap", "切换" },
+            { "Cast", "施法" },
+            { "Equipment", "装备" },
+            { "Type an Extended Command", "输入扩展指令" },
+            { "Type the command", "输入指令" },
+            { "Traditional mode with permanent death", "永久死亡的经典模式" },
+            { "Main Menu (F10)", "主菜单（F10）" },
+            { "This opens the main menu.", "打开主菜单。" },
+            { "Tiles", "图块" },
+            { "Default (60 FPS)", "默认（60 帧/秒）" },
+            { "Recommended", "推荐" },
+            { "Green Block", "绿色方块" },
+            { "CHOOSE A SPELL TO CAST", "选择要施放的法术" },
+            { "Choose a spell to cast", "选择要施放的法术" },
+            { "Success %", "成功率 %" },
+            { "Mana Cost", "法力消耗" },
+            { "Cooldown", "冷却时间" },
+            { "Casts Left", "剩余施法次数" },
+            { "Congregate", "集结" },
+            { "Magically teleports your pets and allies to you.", "以魔法将你的宠物和盟友传送到身边。" },
+            { "Create food", "制造食物" },
+            { "Creates a food ration", "创造一份口粮" },
+            { "Extra healing", "强效治疗" },
+            { "Heals a target for 12-72 hit points", "为目标恢复 12–72 点生命值" },
+            { "Healing", "治疗" },
+            { "Heals a target for 6-36 hit points", "为目标恢复 6–36 点生命值" },
+            { "Minor healing", "次级治疗" },
+            { "Heals a target for 2-12 hit points", "为目标恢复 2–12 点生命值" },
+            { "Protection from fire", "火焰防护" },
+            { "The caster becomes immune to fire attacks", "施法者免疫火焰攻击" },
+            { "Stick to snake", "召唤蛇" },
+            { "Summons a permanent snake", "召唤一条永久存在的蛇" },
+            { "Summon giant ant", "召唤巨蚁" },
+            { "Summons a permanent giant ant", "召唤一只永久存在的巨蚁" },
+            { "Summon raven", "召唤乌鸦" },
+            { "Summons a permanent raven", "召唤一只永久存在的乌鸦" },
+            { "View Spells", "查看法术" },
+            { "Sort Spells", "排序法术" },
+            { "Reorder Spells", "重新排列法术" },
+            { "(list everything)", "（列出全部物品）" },
+            { "SPECIAL", "特殊选项" },
+            { "Character and Game Status", "角色与游戏状态" },
+            { "Character Abilities", "角色能力" },
+            { "Game Status", "游戏状态" },
+            { "Companion Statistics", "伙伴统计" },
+            { "Goals and achievements", "目标与成就" },
+            { "Dungeon overview", "地城总览" },
+            { "Game events", "游戏事件" },
+            { "Killed monsters", "击杀的怪物" },
+            { "Genocided monsters", "灭绝的怪物" },
+            { "Discovered items", "已发现的物品" },
+            { "What do you want to adjust?", "你想调整什么？" },
+            { "Talk to whom? (in what direction)", "要和谁交谈？（朝哪个方向）" },
+            { "There is no-one to talk to.", "没有可以交谈的人。" },
+            { "The Hermit", "隐士" },
+            { "\"Welcome to the entrance to the Dungeons of Doom, adventurer!\"", "“冒险者，欢迎来到厄运地牢的入口！”" },
+            { "Welcome to the entrance to the Dungeons of Doom, adventurer!", "冒险者，欢迎来到厄运地牢的入口！" },
+            { "\"Hello there!\"", "“你好！”" },
+            { "\"Who are you?\"", "“你是谁？”" },
+            { "Ask about further advice", "询问更多建议" },
+            { "Ask about the Amulet of Yendor", "询问耶恩德护符" },
+            { "Ask about the Dungeons of Doom", "询问厄运地牢" },
+            { "Check items for sale", "查看待售物品" },
+            { "Auto", "自动" },
+            { "Right Hand", "右手" },
+            { "Left Hand", "左手" },
+            { "Right Swap", "右侧备用手" },
+            { "Left Swap", "左侧备用手" },
+            { "Robe", "长袍" },
+            { "Boots", "靴子" },
+            { "Blindfold", "眼罩" },
+            { "Misc", "杂项" },
+            { "Amulet", "护身符" },
+            { "Shirt", "衬衣" },
+            { "Bracers", "护腕" },
+            { "Suit", "盔甲" },
+            { "Helmet", "头盔" },
+            { "Right Ring", "右手戒指" },
+            { "Left Ring", "左手戒指" },
+            { "Cloak", "斗篷" },
+            { "Gloves", "手套" },
         };
 
         public static readonly Dictionary<string, string> ExactDict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -8911,6 +8995,18 @@ namespace GnollHackX
             { "zlib failed to allocate memory", "zlib 分配内存失败" },
             { "zorkmid", "枚金币" },
             { "zruty", "兹鲁提巨怪" },
+            { "symbol", "圣徽" },
+            { "unholy symbol", "邪恶圣徽" },
+            { "gem", "宝石" },
+            { "holy water", "圣水" },
+            { "potion of holy water", "圣水药剂" },
+            { "sandalwood chest", "檀木箱" },
+            { "a wand of probing", "探测魔杖" },
+            { "an uncursed oil lamp", "未受诅咒的油灯" },
+            { "blessed +3 mace", "受祝福的 +3 钉头锤" },
+            { "a blessed +3 mace", "受祝福的 +3 钉头锤" },
+            { "being worn; better AC", "穿戴中；护甲等级更佳" },
+            { "being worn; better MC", "穿戴中；魔法防护更佳" },
         };
 
         public static readonly Dictionary<string, string> CombatVerbDict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -9283,6 +9379,34 @@ namespace GnollHackX
 
         private static bool TryTranslateInventoryText(string text, out string translated)
         {
+            Match gemBag = Regex.Match(text, @"^(?<bag>.+?)\s+containing\s+(?<count>\d+)\s+gems?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            if (gemBag.Success)
+            {
+                string bagName = Regex.Replace(gemBag.Groups["bag"].Value.Trim(), @"^an(?=uncursed\s)", "an ", RegexOptions.IgnoreCase);
+                string bagZh = TranslateNounPhrase(bagName);
+                if (!string.Equals(bagZh, bagName, StringComparison.Ordinal))
+                {
+                    translated = $"{bagZh}（装有 {gemBag.Groups["count"].Value} 颗宝石）";
+                    return true;
+                }
+            }
+
+            Match equipmentSummary = Regex.Match(text,
+                @"^(?<slots>\d+/\d+)\s+slots\s+(?<current>\d+(?:\.\d+)?)\s+lbs?/(?<maximum>\d+(?:\.\d+)?)\s+lbs?\s+weight$",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            if (equipmentSummary.Success)
+            {
+                translated = $"{equipmentSummary.Groups["slots"].Value} 格，负重 {equipmentSummary.Groups["current"].Value}/{equipmentSummary.Groups["maximum"].Value} 磅";
+                return true;
+            }
+
+            Match turnsLeft = Regex.Match(text, @"^(?<count>\d+)\s+turns? left$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            if (turnsLeft.Success)
+            {
+                translated = $"剩余 {turnsLeft.Groups["count"].Value} 回合";
+                return true;
+            }
+
             Match item = Regex.Match(text, @"^(?<name>[^()]+?)\s*\((?<metadata>[^()]*)\)$");
             if (item.Success && LooksLikeInventoryMetadata(item.Groups["metadata"].Value))
             {
@@ -9322,7 +9446,7 @@ namespace GnollHackX
 
         private static bool LooksLikeInventoryMetadata(string text)
         {
-            return Regex.IsMatch(text, @"\blbs?\b|weapon in hand|readied alternate weapon|in quiver|being worn|charges?\b|recharging",
+            return Regex.IsMatch(text, @"\blbs?\b|weapon in hand|readied alternate weapon|in quiver|being worn|charges?\b|recharging|turns? left|better AC|better MC",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         }
 
@@ -9336,6 +9460,9 @@ namespace GnollHackX
                 else if (field.Equals("readied alternate weapon", StringComparison.OrdinalIgnoreCase)) fields[i] = "已预备的备用武器";
                 else if (field.Equals("in quiver", StringComparison.OrdinalIgnoreCase)) fields[i] = "在箭袋中";
                 else if (field.Equals("being worn", StringComparison.OrdinalIgnoreCase)) fields[i] = "穿戴中";
+                else if (field.Equals("being worn; better AC", StringComparison.OrdinalIgnoreCase)) fields[i] = "穿戴中；护甲等级更佳";
+                else if (field.Equals("being worn; better MC", StringComparison.OrdinalIgnoreCase)) fields[i] = "穿戴中；魔法防护更佳";
+                else if (Regex.IsMatch(field, @"^\d+\s+turns? left$", RegexOptions.IgnoreCase)) fields[i] = "剩余 " + Regex.Match(field, @"\d+").Value + " 回合";
                 else
                 {
                     Match weight = Regex.Match(field, @"^(?<weight>[0-9]+(?:\.[0-9]+)?)\s+lbs?$", RegexOptions.IgnoreCase);

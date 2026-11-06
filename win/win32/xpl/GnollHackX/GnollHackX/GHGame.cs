@@ -4502,6 +4502,10 @@ namespace GnollHackX
                             Debug.WriteLine("Message in Replay: " + text);
                             break;
                         }
+#if GNH_MAUI
+                        title = GnhDisplayLocalization.Translate(title);
+                        text = GnhDisplayLocalization.Translate(text);
+#endif
                         _messageFinished = false;
                         RequestQueue.Enqueue(new GHRequest(this, GHRequestType.Message, title, text, null, null));
                         int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
@@ -4526,8 +4530,17 @@ namespace GnollHackX
                         char def = viewtype == (int)special_view_types.SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y ? 'y' : 'n'; ;
                         if (FastForwardGameOver)
                             return def;
+#if GNH_MAUI
+                        title = GnhDisplayLocalization.Translate(title);
+                        text = GnhDisplayLocalization.Translate(text);
+                        string yesText = GnhDisplayLocalization.Translate("Yes");
+                        string noText = GnhDisplayLocalization.Translate("No");
+#else
+                        string yesText = "Yes";
+                        string noText = "No";
+#endif
                         _ynConfirmationFinished = false;
-                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.YnConfirmation, title, text, "Yes", "No"));
+                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.YnConfirmation, title, text, yesText, noText));
                         int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
                         while (!_ynConfirmationFinished)
                         {
