@@ -13,8 +13,112 @@ namespace GnollHackX
         public static bool Enabled { get; set; } = true;
         private static readonly ConcurrentDictionary<string, string> _cache = new ConcurrentDictionary<string, string>(StringComparer.Ordinal);
 
+        private static readonly Dictionary<string, string> DisplayDict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "2-Weapon", "双持" },
+            { "Adventurer, welcome to the entrance to the Dungeons of Doom!", "冒险者，欢迎来到厄运地牢的入口！" },
+            { "Apply", "使用" },
+            { "Attributes", "属性" },
+            { "Autopickup", "自动拾取" },
+            { "Autostash", "自动存放" },
+            { "Back to Game", "返回游戏" },
+            { "Break", "破坏" },
+            { "Cast Quick", "快速施法" },
+            { "Chat", "交谈" },
+            { "Commands", "指令" },
+            { "Continue Current Game", "继续当前游戏" },
+            { "Count", "数量" },
+            { "Delete Saved Game", "删除存档" },
+            { "Dig", "挖掘" },
+            { "Dip", "浸蘸" },
+            { "Discoveries", "已发现物品" },
+            { "Drink", "饮用" },
+            { "Drop Items", "丢弃物品" },
+            { "Drop Types", "按类型丢弃" },
+            { "Eat", "进食" },
+            { "Engrave", "刻字" },
+            { "Engrave Quick", "快速刻字" },
+            { "Examine", "检视" },
+            { "Extended", "扩展指令" },
+            { "Fire", "射击" },
+            { "Fight", "攻击" },
+            { "Force Lock", "强行开锁" },
+            { "Genesis", "创造生物" },
+            { "Genocided", "已灭绝" },
+            { "Go Down", "下楼" },
+            { "Go Up", "上楼" },
+            { "Goals", "当前目标" },
+            { "Handedness", "惯用手" },
+            { "Help", "帮助" },
+            { "Identify", "鉴定" },
+            { "Invoke", "启动神器" },
+            { "Jump", "跳跃" },
+            { "Killed", "击杀记录" },
+            { "Level Change", "切换楼层" },
+            { "Levelport", "传送楼层" },
+            { "Light", "点亮" },
+            { "Load Saved Game", "读取存档" },
+            { "Look Far", "远望" },
+            { "Look Here", "查看此处" },
+            { "Loot", "搜刮" },
+            { "Mix", "调配" },
+            { "Monster", "怪物指令" },
+            { "Name", "命名" },
+            { "New Game", "新游戏" },
+            { "Offer", "献祭" },
+            { "Open", "开门" },
+            { "Overview", "地城总览" },
+            { "Pay", "付款" },
+            { "Pick-axe", "鹤嘴锄" },
+            { "Polearm", "长柄武器" },
+            { "Polymorph Self", "自我变形" },
+            { "Pray", "祈祷" },
+            { "Put On", "穿戴" },
+            { "Quick Spell", "快捷法术" },
+            { "Quiver", "装入箭袋" },
+            { "Read", "阅读" },
+            { "Remove", "取下" },
+            { "Rest", "休息" },
+            { "Ride", "骑乘" },
+            { "Rub", "摩擦" },
+            { "Really save?", "确定要保存吗？" },
+            { "Reveal", "揭示地图" },
+            { "Search 20", "搜索 20 回合" },
+            { "Sit", "坐下" },
+            { "Skills", "技能" },
+            { "Spells", "法术" },
+            { "Take Off", "脱下" },
+            { "Teleport", "传送" },
+            { "Throw", "投掷" },
+            { "Tip", "倾倒" },
+            { "Travel", "旅行" },
+            { "Untrap", "拆除陷阱" },
+            { "Unwield", "卸下武器" },
+            { "View Spell", "查看法术" },
+            { "Wait", "等待" },
+            { "Wear", "穿戴" },
+            { "Wear Many", "批量穿戴" },
+            { "Wield", "持握" },
+            { "Wipe", "擦拭眼睛" },
+            { "Wish", "许愿" },
+            { "What would you like to drop?", "要丢弃哪些物品？" },
+            { "What Is", "查看对象" },
+            { "You", "角色" },
+            { "Yell", "呼喊" },
+            { "Zap", "施放魔杖" },
+            { "Zap Quick", "快速施放魔杖" },
+            { "WEIGHT SUMMARY", "负重汇总" },
+            { "Revival and score reduction upon death", "死亡后可复活，但会扣分" },
+            { "elven", "精灵" },
+            { "elf", "精灵" },
+            { "human", "人类" },
+            { "dwarven", "矮人" },
+            { "Take Off Many", "批量脱下" },
+        };
+
         public static readonly Dictionary<string, string> ExactDict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
+            { "backpack", "背包" },
             { "  Force Post Bones", "  强制上传骨档" },
             { "  Frame Marker", "  帧同步标记" },
             { "  Frame Time Profiler", "  帧耗时分析器" },
@@ -8958,6 +9062,8 @@ namespace GnollHackX
             ("thoroughly rotten ", "严重腐烂的"),
             ("very rotten ", "非常腐烂的"),
             ("rotten ", "腐烂的"),
+            ("pair of ", "一对"),
+            ("electrified ", "带电的"),
             ("blessed ", "受祝福的"),
             ("uncursed ", "未受诅咒的"),
             ("cursed ", "受诅咒的"),
@@ -9054,6 +9160,9 @@ namespace GnollHackX
             if (string.IsNullOrEmpty(trimmed))
                 return raw;
 
+            if (TryTranslateDisplayPhrase(trimmed, out string displayTranslation))
+                return raw.Length == trimmed.Length ? displayTranslation : raw.Replace(trimmed, displayTranslation);
+
             if (ExactDict.TryGetValue(trimmed, out string exactHit))
             {
                 if (raw.Length == trimmed.Length) return exactHit;
@@ -9095,6 +9204,153 @@ namespace GnollHackX
             return raw;
         }
 
+        private static bool TryTranslateDisplayPhrase(string text, out string translated)
+        {
+            if (DisplayDict.TryGetValue(text, out translated))
+                return true;
+
+            if (text.IndexOfAny(new[] { '\r', '\n' }) >= 0)
+            {
+                string[] lines = Regex.Split(text, "\\r\\n|\\r|\\n");
+                bool changed = false;
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    string next = TranslateInternal(lines[i]);
+                    if (!string.Equals(next, lines[i], StringComparison.Ordinal)) changed = true;
+                    lines[i] = next;
+                }
+                translated = changed ? string.Join("\n", lines) : text;
+                return changed;
+            }
+
+            if (text.StartsWith("Continue Current Game", StringComparison.OrdinalIgnoreCase))
+            {
+                string suffix = text.Substring("Continue Current Game".Length);
+            Match details = Regex.Match(suffix, @"^\s*\((?<player>[^,]+),\s*(?<race>[^,]+?)\s+(?<role>[^)]+)\)$");
+                if (details.Success)
+                {
+                    string race = TranslateDisplayNoun(details.Groups["race"].Value.Trim());
+                    string role = TranslateDisplayNoun(details.Groups["role"].Value.Trim());
+                    translated = $"继续当前游戏（{details.Groups["player"].Value.Trim()}，{race}{role}）";
+                }
+                else
+                    translated = "继续当前游戏" + suffix;
+                return true;
+            }
+
+            Match newGame = Regex.Match(text, @"^New Game in (?<mode>.+?) Mode(?:\s*\((?<description>.*)\))?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            if (newGame.Success)
+            {
+                string mode = newGame.Groups["mode"].Value.Trim();
+                string modeZh = mode.Equals("Modern", StringComparison.OrdinalIgnoreCase) ? "现代" :
+                    mode.Equals("Classic", StringComparison.OrdinalIgnoreCase) ? "经典" :
+                    mode.Equals("Casual", StringComparison.OrdinalIgnoreCase) ? "休闲" :
+                    mode.Equals("Tournament", StringComparison.OrdinalIgnoreCase) ? "锦标赛" :
+                    TranslateNounPhrase(mode);
+                translated = $"开始{modeZh}模式新游戏";
+                if (newGame.Groups["description"].Success)
+                {
+                    string description = newGame.Groups["description"].Value.Trim();
+                    translated += DisplayDict.TryGetValue(description, out string descriptionZh)
+                        ? $"（{descriptionZh}）" : $"（{description}）";
+                }
+                return true;
+            }
+
+            Match welcomeBack = Regex.Match(text,
+                @"^Hello\s+(?<player>.+?),\s+the\s+(?<race>.+?)\s+(?<role>[^,]+),\s+welcome back to GnollHack!$",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            if (welcomeBack.Success)
+            {
+                string race = TranslateDisplayNoun(welcomeBack.Groups["race"].Value.Trim());
+                string role = TranslateDisplayNoun(welcomeBack.Groups["role"].Value.Trim());
+                translated = $"欢迎回来，{welcomeBack.Groups["player"].Value.Trim()}！你是{race}{role}。";
+                return true;
+            }
+
+            if (TryTranslateInventoryText(text, out translated))
+                return true;
+
+            translated = text;
+            return false;
+        }
+
+        private static string TranslateDisplayNoun(string value)
+        {
+            if (DisplayDict.TryGetValue(value, out string translated)) return translated;
+            return TranslateNounPhrase(value);
+        }
+
+        private static bool TryTranslateInventoryText(string text, out string translated)
+        {
+            Match item = Regex.Match(text, @"^(?<name>[^()]+?)\s*\((?<metadata>[^()]*)\)$");
+            if (item.Success && LooksLikeInventoryMetadata(item.Groups["metadata"].Value))
+            {
+                string name = TranslateNounPhrase(item.Groups["name"].Value.Trim());
+                string metadata = TranslateInventoryMetadata(item.Groups["metadata"].Value);
+                translated = $"{name}（{metadata}）";
+                return !string.Equals(translated, text, StringComparison.Ordinal);
+            }
+
+            if (LooksLikeInventoryMetadata(text))
+            {
+                translated = TranslateInventoryMetadata(text);
+                return !string.Equals(translated, text, StringComparison.Ordinal);
+            }
+
+            Match totalWeight = Regex.Match(text, @"^(?<weight>[0-9]+(?:\.[0-9]+)?)\s+lbs? of total weight\.$", RegexOptions.IgnoreCase);
+            if (totalWeight.Success)
+            {
+                translated = $"总重量：{totalWeight.Groups["weight"].Value} 磅。";
+                return true;
+            }
+
+            Match carrying = Regex.Match(text,
+                @"^Carrying (?<current>[0-9]+(?:\.[0-9]+)?) lbs and (?<state>.+?) until (?<limit>[0-9]+(?:\.[0-9]+)?) lbs\.$",
+                RegexOptions.IgnoreCase);
+            if (carrying.Success)
+            {
+                string state = carrying.Groups["state"].Value.Equals("unencumbered", StringComparison.OrdinalIgnoreCase)
+                    ? "未超重" : carrying.Groups["state"].Value;
+                translated = $"当前负重 {carrying.Groups["current"].Value} 磅，{state}（上限 {carrying.Groups["limit"].Value} 磅）。";
+                return true;
+            }
+
+            translated = text;
+            return false;
+        }
+
+        private static bool LooksLikeInventoryMetadata(string text)
+        {
+            return Regex.IsMatch(text, @"\blbs?\b|weapon in hand|readied alternate weapon|in quiver|being worn|charges?\b|recharging",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        }
+
+        private static string TranslateInventoryMetadata(string text)
+        {
+            string[] fields = text.Split(',');
+            for (int i = 0; i < fields.Length; i++)
+            {
+                string field = fields[i].Trim();
+                if (field.Equals("weapon in hand", StringComparison.OrdinalIgnoreCase)) fields[i] = "手中主武器";
+                else if (field.Equals("readied alternate weapon", StringComparison.OrdinalIgnoreCase)) fields[i] = "已预备的备用武器";
+                else if (field.Equals("in quiver", StringComparison.OrdinalIgnoreCase)) fields[i] = "在箭袋中";
+                else if (field.Equals("being worn", StringComparison.OrdinalIgnoreCase)) fields[i] = "穿戴中";
+                else
+                {
+                    Match weight = Regex.Match(field, @"^(?<weight>[0-9]+(?:\.[0-9]+)?)\s+lbs?$", RegexOptions.IgnoreCase);
+                    Match charges = Regex.Match(field, @"^(?<count>\d+)\s+charges?$", RegexOptions.IgnoreCase);
+                    Match recharging = Regex.Match(field, @"^(?<count>\d+)\s+rechargings?$", RegexOptions.IgnoreCase);
+                    if (weight.Success) fields[i] = weight.Groups["weight"].Value + " 磅";
+                    else if (charges.Success) fields[i] = charges.Groups["count"].Value + " 次充能";
+                    else if (recharging.Success) fields[i] = "正在充能 " + recharging.Groups["count"].Value + " 次";
+                    else if (ExactDict.TryGetValue(field, out string known)) fields[i] = known;
+                }
+            }
+            return string.Join("，", fields);
+        }
+
+        
         private static string FixMixedCjkSentence(string s)
         {
             if (s.StartsWith("You feel ", StringComparison.Ordinal)) s = "你感到" + s.Substring(9);

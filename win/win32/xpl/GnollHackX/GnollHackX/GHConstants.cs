@@ -539,7 +539,7 @@ namespace GnollHackX
         public const int MaxSentryScopeExtraLength = 20000;
         public const string SentryNoGameRunningText = "(no game running)";
         public const string SAVE_GAME_NOTIFICATION_CHANNEL_ID = "save_game_channel";
-        public const string SingleCommandPageTitle = "Commands";
+        public const string SingleCommandPageTitle = "指令";
         public const int DefaultMoreButtonListSize = MoreButtonPages * MoreButtonsPerRow * MoreButtonsPerColumn + 1;
         public const int DefaultDrawCommandListSize = 512;
         public const float KeyboardShortcutRelativeFontSize = 0.9f;
